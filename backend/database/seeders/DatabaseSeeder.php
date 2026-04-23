@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             SuperAdminSeeder::class,
             DemoShopSeeder::class,
+            DemoPosSeeder::class,
         ]);
     }
 }

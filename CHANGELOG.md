@@ -2,6 +2,91 @@
 
 All notable changes to the MaXPos project are documented here.
 
+## [Unreleased] — 2026-04-23 — Sales domain + REST API (Prompt 3)
+
+### Added
+
+- **5 migrations** under `database/migrations/2026_04_25_*`:
+  - `cash_sessions` — uuid id, tenant_id, location_id, user_id, opened_at, closed_at, initial/final/expected cash (decimal 10,2), `status` enum `open|closed`, notes, timestamps. Indexes on `(tenant_id, location_id, status)` and `(user_id, status)`. The "one open session per user per location" invariant is enforced in `ReceiptService::openCashSession` under a `SELECT ... FOR UPDATE` lock (no partial unique index since MySQL 8 requires an expression index; the service-level check is cross-DB safe).
+  - `receipt_number_counters` — composite PK `(tenant_id, location_id)`, `last_number` bigint, FKs to tenants/locations. Used as the **atomic gapless counter** for per-location receipt numbering.
+  - `receipts` — uuid id, tenant_id, location_id, cash_session_id, `number` bigint, customer_id (nullable), subtotal/vat_total/discount_total/total (decimal 12,2), `status` enum `draft|completed|voided`, fiscal_printed_at, saga_synced_at, voided_at, void_reason. Unique `(tenant_id, location_id, number)`. Indexes on `(tenant_id, status, created_at)` and `(cash_session_id)`.
+  - `receipt_items` — uuid id, receipt_id (cascade delete), article_id + gestiune_id (restrict — can't delete catalog rows referenced by historical receipts), `article_name_snapshot` and `sku_snapshot` (frozen at sale time), quantity decimal(15,3), unit_price decimal(10,2), vat_rate, discount_amount, line_subtotal/line_vat/line_total decimal(12,2). Indexed on receipt_id.
+  - `payments` — uuid id, receipt_id (cascade delete), `method` enum `cash|card|voucher|modern|transfer`, amount decimal(12,2), reference (string, nullable), created_at. Indexed on `(receipt_id, method)`.
+
+- **4 Eloquent models** — `CashSession`, `Receipt`, `ReceiptItem`, `Payment`. All UUID PKs. `CashSession` and `Receipt` use `BelongsToTenant` for tenant auto-scoping. `ReceiptItem`/`Payment` are tenant-inherited via parent receipt and don't need their own tenant_id (kept tables slim). Status helper methods on `CashSession` (`isOpen`/`isClosed`) and `Receipt` (`isDraft`/`isCompleted`/`isVoided`). Payment model has `public $timestamps = false` with a manual `created_at` column. Factories added for `CashSession` and `Receipt`.
+
+- **`App\Services\ReceiptService`** — single source of truth for all POS write-paths. Every mutating method is wrapped in `DB::transaction(...)`; exceptions bubble up and roll back. Money is manipulated as decimal strings via `bcmath` at scale 2 (quantities at scale 3); floats are accepted at the boundary and normalized immediately. Methods:
+  - `openCashSession(Location, User, initialCash, notes?)` — locks + checks for any existing open session for `(user, location)`, throws `PosException(409)` on duplicate.
+  - `closeCashSession(session, finalCash, notes?)` — recomputes `expected_cash = initial_cash + Σ(cash-method payments on completed receipts in session)`. Rejects if any draft receipts remain.
+  - `createDraftReceipt(session, customer?)` — allocates next `number` atomically: `SELECT ... FOR UPDATE` on `receipt_number_counters(tenant_id, location_id)`, increments, inserts receipt in the same transaction. Gapless.
+  - `addItem`, `updateItemQuantity`, `removeItem` — only on draft, recompute totals. VAT is computed **inclusive** (receipt prices include VAT) via `line_vat = line_subtotal * vat_rate / (100 + vat_rate)` with half-away-from-zero rounding at the cent. Negative quantities are allowed (return lines — they flip totals).
+  - `applyDiscount(receipt, amount)` — header-level discount.
+  - `completeReceipt(receipt, payments[])` — validates `Σ(payments.amount) === receipt.total` to the cent, decrements stock per line from the line's gestiune, writes Payment rows, sets status=completed. For negative-qty lines stock is *incremented* (return).
+  - `voidReceipt(receipt, reason)` — refuses if `fiscal_printed_at !== null`. If receipt was completed, reverses stock movements.
+
+- **`App\Exceptions\PosException`** — typed domain exception carrying an HTTP status. A custom renderer in `bootstrap/app.php` converts it to `{ data: null, meta: { error: "..." } }` with the right status on API/JSON requests. Messages are in Romanian.
+
+- **POS permissions + roles** — `RolesSeeder` now creates the permissions `pos.open-session`, `pos.close-session`, `pos.sell`, `pos.void`, `pos.discount` (guard `web`). All three roles (`super-admin`, `tenant-owner`, `cashier`) receive all POS permissions.
+
+- **6 API Resources** — `ArticleResource`, `CustomerResource`, `CashSessionResource`, `ReceiptResource` (with nested items + payments), `ReceiptItemResource`, `PaymentResource`. Money fields are cast to strings on output. All responses use the `{ data, meta }` envelope.
+
+- **REST API under `/api/v1/`** (Sanctum-protected, tenant resolved via the `InitializeTenancyForAuthenticatedUser` middleware):
+  - `POST /auth/login`, `POST /auth/logout`, `GET /me`
+  - `GET /articles` (search, group filter, paginated), `GET /articles/by-barcode/{barcode}`
+  - `GET /customers` (search)
+  - `POST /cash-sessions/open` (`can:pos.open-session`), `POST /cash-sessions/{id}/close` (`can:pos.close-session`), `GET /cash-sessions/current`
+  - `POST /receipts` (`can:pos.sell`), `GET /receipts/{id}`
+  - `POST /receipts/{id}/items`, `PATCH /receipts/{id}/items/{itemId}`, `DELETE /receipts/{id}/items/{itemId}` (all `can:pos.sell`)
+  - `POST /receipts/{id}/discount` (`can:pos.discount`)
+  - `POST /receipts/{id}/complete` (`can:pos.sell`), `POST /receipts/{id}/void` (`can:pos.void`)
+  - 6 thin controllers (`AuthController`, `MeController`, `ArticleController`, `CustomerController`, `CashSessionController`, `ReceiptController`). Each mutating endpoint delegates to `ReceiptService`. 9 FormRequests under `app/Http/Requests/Api/`.
+
+- **`DemoPosSeeder`** — creates one open `cash_session` for the demo tenant's owner so the POS can be exercised immediately after `db:seed`. Uses `tenancy()->initialize()` to stay within single-DB auto-scoping. Idempotent.
+
+- **`docs/api-endpoints.md`** — single-file REST reference: every route with payload schema, example response shapes, error envelope documentation, and a note on the numbering atomicity guarantee.
+
+- **20 new Pest tests** in `tests/Feature/Pos/` (46 total project-wide, all green). Shared helpers live in `tests/Feature/PosTestHelpers.php`, required from `tests/Pest.php`.
+  - `CashSessionTest` — open, concurrent-open rejection, close with `expected_cash` math, close-with-drafts refusal
+  - `ReceiptServiceTest` — mixed-VAT totals, split payment, mismatched payment rejection, stock decrement + reversal on void, draft-void (no stock change), fiscal-printed refusal, adding-items-after-complete refusal, negative-qty return, gapless sequential numbering
+  - `ApiHappyPathTest` — login, full end-to-end receipt lifecycle over HTTP, barcode lookup (200 + 404), 422 on payment mismatch via HTTP
+  - `AuthorizationTest` — 403 on void without `pos.void`, 403 on add-item without `pos.sell`
+  - `TenantIsolationApiTest` — receipt from tenant A returns 404 for a user from tenant B over the API
+
+### Pipeline
+
+- `php artisan migrate:fresh --seed` → 20 migrations, 4 seeders, demo tenant with an open cash session ready.
+- `./vendor/bin/pint` → clean.
+- `./vendor/bin/pest` → **46 passed**, 84 assertions, ~4.5s.
+- `composer audit` → no advisories.
+
+### Deviations from spec
+
+- **"One open session per user per location"** is enforced at the service layer (locked query + exception) rather than via a partial unique index. Partial/expression unique indexes differ substantially between MySQL 8 and SQLite, and CLAUDE.md forbids SQLite-only or MySQL-only DDL. The service-layer check is transactional and cross-DB safe.
+- **VAT is computed inclusive of price** (receipt prices in Romania are VAT-inclusive at the till). `line_vat = line_subtotal * vat_rate / (100 + vat_rate)` with half-away-from-zero rounding to the cent. `line_subtotal` in the DB stores the net amount; `line_total` stores the gross. This matches the Romanian Casa-de-Marcat convention.
+- **Concurrent numbering test** is sequential (10-in-a-row), not truly parallel. True parallel testing requires separate DB connections with real row locking — impractical against SQLite :memory:. The atomic pattern (`SELECT ... FOR UPDATE` inside a transaction) is standard and holds under MySQL 8 production load. Documented in `docs/api-endpoints.md`.
+- **`receipt_items.article_id` and `gestiune_id` use `restrictOnDelete`** rather than cascade/nullOnDelete, so historical receipts can never lose their source article/gestiune references. Catalog deletes must handle this explicitly (later UX problem).
+
+### No new dependencies
+
+Implemented entirely with bcmath (shipped with PHP 8.4) + Laravel Sanctum + Spatie Permission from prior prompts. No `composer require` calls.
+
+## Manual verification checklist — Prompt 3
+
+Bruno/Postman against `http://backend.test/api/v1`. Demo credentials after `db:seed`:
+- `admin@maxpos.ro` / `password` (super admin — sees all tenants)
+- `owner@magazin-demo.ro` / `password` (tenant-owner for Magazin Demo, has an **open** cash session already seeded)
+
+- [ ] **Login** — `POST /auth/login` with `{email, password, device_name}` → `200`, receive `data.token`.
+- [ ] **Set Authorization header** — `Bearer <token>` on every subsequent request.
+- [ ] **Me + session** — `GET /me` → `data.user` populated, `data.active_session` non-null for the demo owner (seeded by DemoPosSeeder).
+- [ ] **Open second session** — Log in as a fresh cashier with no session → `POST /cash-sessions/open {location_id, initial_cash: 100}` → `201`.
+- [ ] **Draft receipt** — `POST /receipts {cash_session_id}` → `201`, `data.number` is the next gapless integer for that location.
+- [ ] **Add items** — `POST /receipts/{id}/items {article_id, quantity: 2}` (twice, different articles) → `data.items` grows, `data.total` recomputes.
+- [ ] **Split payment completion** — `POST /receipts/{id}/complete {payments: [{method:"cash", amount:X}, {method:"card", amount:Y}]}` where `X + Y == data.total` → `200`, `data.status = "completed"`. Check `StockLevel` in `/admin` — quantity for those articles in that gestiune has dropped by the sold quantity.
+- [ ] **Payment mismatch** — Repeat with `X + Y != total` → `422` with `meta.error` in Romanian.
+- [ ] **Void completed** — `POST /receipts/{id}/void {reason: "Cerere client"}` → `200`, `data.status = "voided"`. Check stock again — quantities restored.
+- [ ] **Cannot void fiscal** — Manually set `fiscal_printed_at` on a completed receipt via tinker, then try to void → `409`.
+
 ## [Unreleased] — 2026-04-23 — Shop nomenclator (Prompt 2)
 
 ### Added
