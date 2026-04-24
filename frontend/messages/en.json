@@ -1,0 +1,70 @@
+{
+  "common": {
+    "appName": "MaXPos",
+    "tagline": "A modern point-of-sale for your shop",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "search": "Search",
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials to continue",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@your-shop.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Sign in",
+      "submitting": "Checking…",
+      "errorInvalid": "Invalid email or password.",
+      "errorNetwork": "Could not reach the server. Check your connection.",
+      "errorUnknown": "Something went wrong."
+    },
+    "logout": { "label": "Log out" },
+    "guard": { "redirecting": "Redirecting to sign in…" }
+  },
+  "nav": {
+    "groups": { "main": "Main" },
+    "items": {
+      "sale": "Sale",
+      "receipts": "Receipts",
+      "stock": "Stock",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "toggleSidebar": "Toggle menu",
+    "profile": "My profile"
+  },
+  "topbar": {
+    "locationFallback": "No location selected",
+    "sessionOpen": "Session open",
+    "sessionClosed": "No active session",
+    "sessionAmount": "{amount} lei in drawer",
+    "searchPlaceholder": "Scan or search product…"
+  },
+  "dashboard": {
+    "welcome": "Welcome, {name}!",
+    "welcomeNoName": "Welcome!",
+    "sessionCardTitle": "Cash session",
+    "sessionOpenText": "You have an active session opened at {time}.",
+    "sessionNoneText": "No active session. Open one before starting to sell.",
+    "openSessionCta": "Open session",
+    "goToSale": "Go to sale",
+    "quickLinks": "Quick links",
+    "placeholder": {
+      "sale": "The sale screen will be available soon.",
+      "settings": "Settings will be available soon.",
+      "stock": "Stock module will be available soon.",
+      "receipts": "Receipt history will be available soon.",
+      "reports": "Reports will be available soon."
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Try again.",
+    "notFound": "The page you requested does not exist."
+  }
+}

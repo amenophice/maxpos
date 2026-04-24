@@ -1,0 +1,76 @@
+{
+  "common": {
+    "appName": "MaXPos",
+    "tagline": "Sistem de vânzare modern pentru magazinul tău",
+    "loading": "Se încarcă…",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "back": "Înapoi",
+    "search": "Caută",
+    "online": "Online",
+    "offline": "Fără conexiune"
+  },
+  "auth": {
+    "login": {
+      "title": "Autentificare",
+      "subtitle": "Introdu datele de acces pentru a continua",
+      "emailLabel": "Adresă de e-mail",
+      "emailPlaceholder": "nume@magazinul-tau.ro",
+      "passwordLabel": "Parolă",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Autentificare",
+      "submitting": "Se verifică…",
+      "errorInvalid": "E-mail sau parolă incorecte.",
+      "errorNetwork": "Serverul nu poate fi contactat. Verifică conexiunea.",
+      "errorUnknown": "A apărut o eroare neașteptată."
+    },
+    "logout": {
+      "label": "Delogare"
+    },
+    "guard": {
+      "redirecting": "Te redirecționăm către autentificare…"
+    }
+  },
+  "nav": {
+    "groups": {
+      "main": "Principal"
+    },
+    "items": {
+      "sale": "Vânzare",
+      "receipts": "Istoric bonuri",
+      "stock": "Stoc",
+      "reports": "Rapoarte",
+      "settings": "Setări"
+    },
+    "toggleSidebar": "Comută meniul",
+    "profile": "Profilul meu"
+  },
+  "topbar": {
+    "locationFallback": "Nicio locație selectată",
+    "sessionOpen": "Sesiune deschisă",
+    "sessionClosed": "Nicio sesiune activă",
+    "sessionAmount": "{amount} lei în casă",
+    "searchPlaceholder": "Scanează sau caută produs…"
+  },
+  "dashboard": {
+    "welcome": "Bine ai venit, {name}!",
+    "welcomeNoName": "Bine ai venit!",
+    "sessionCardTitle": "Sesiune de casă",
+    "sessionOpenText": "Ai o sesiune activă deschisă la {time}.",
+    "sessionNoneText": "Nu ai o sesiune activă. Deschide una înainte de a începe vânzarea.",
+    "openSessionCta": "Deschide sesiune",
+    "goToSale": "Mergi la vânzare",
+    "quickLinks": "Acces rapid",
+    "placeholder": {
+      "sale": "Ecranul de vânzare va fi disponibil în curând.",
+      "settings": "Setările vor fi disponibile în curând.",
+      "stock": "Modulul de stoc va fi disponibil în curând.",
+      "receipts": "Istoricul bonurilor va fi disponibil în curând.",
+      "reports": "Rapoartele vor fi disponibile în curând."
+    }
+  },
+  "errors": {
+    "generic": "A apărut o eroare. Reîncearcă.",
+    "notFound": "Pagina căutată nu există."
+  }
+}
