@@ -32,13 +32,22 @@ class Location extends Model
 {
     use BelongsToTenant, HasFactory, HasUuids;
 
+    public const DEFAULT_SCALE_PREFIXES = ['26', '27', '28', '29'];
+
     protected $guarded = ['id'];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'scale_barcode_prefixes' => 'array',
         ];
+    }
+
+    /** Effective list of allowed scale-barcode prefixes (falls back to defaults). */
+    public function effectiveScalePrefixes(): array
+    {
+        return $this->scale_barcode_prefixes ?: self::DEFAULT_SCALE_PREFIXES;
     }
 
     public function gestiuni(): HasMany

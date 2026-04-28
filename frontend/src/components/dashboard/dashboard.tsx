@@ -57,7 +57,7 @@ export function Dashboard({
           </CardHeader>
           <CardContent>
             <Button asChild>
-              <Link href="/sale">
+              <Link href="/vanzare">
                 <ShoppingCart className="mr-2 h-4 w-4" />
                 {activeSession ? t("goToSale") : t("openSessionCta")}
                 <ArrowRight className="ml-2 h-4 w-4" />

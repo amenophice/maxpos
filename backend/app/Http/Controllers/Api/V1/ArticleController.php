@@ -14,7 +14,7 @@ class ArticleController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Article::query()->with('barcodes');
+        $query = Article::query()->with(['barcodes', 'stockLevels']);
 
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {

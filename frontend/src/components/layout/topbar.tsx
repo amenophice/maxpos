@@ -4,7 +4,9 @@ import { LogOut, Menu, Search, User as UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { logoutAction } from "@/app/actions/auth";
+import { CatalogSyncButton } from "@/components/layout/catalog-sync-button";
 import { NetworkStatusBadge } from "@/components/layout/network-status-badge";
+import { PendingQueuePill } from "@/components/layout/pending-queue-pill";
 import { SessionPill } from "@/components/layout/session-pill";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -73,6 +75,10 @@ export function Topbar({
 
       <div className="flex items-center gap-2">
         <NetworkStatusBadge />
+
+        <PendingQueuePill />
+
+        <CatalogSyncButton />
 
         <SessionPill activeSession={activeSession} />
 

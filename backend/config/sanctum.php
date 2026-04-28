@@ -18,12 +18,11 @@ return [
     |
     */
 
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-        Sanctum::currentApplicationUrlWithPort(),
-        // Sanctum::currentRequestHost(),
-    ))),
+    // Empty by default — POS clients authenticate with Bearer Personal Access
+    // Tokens, not session cookies. See bootstrap/app.php for the full
+    // explanation. Override via SANCTUM_STATEFUL_DOMAINS only if a future
+    // browser-form flow needs SPA-style cookie auth.
+    'stateful' => array_filter(explode(',', env('SANCTUM_STATEFUL_DOMAINS', ''))),
 
     /*
     |--------------------------------------------------------------------------

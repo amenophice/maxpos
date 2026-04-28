@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/sale", icon: ShoppingCart, key: "sale" },
+  { href: "/vanzare", icon: ShoppingCart, key: "sale" },
   { href: "/receipts", icon: Receipt, key: "receipts" },
   { href: "/stock", icon: PackageSearch, key: "stock" },
   { href: "/reports", icon: BarChart3, key: "reports" },

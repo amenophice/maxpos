@@ -75,43 +75,44 @@ class DemoShopSeeder extends Seeder
                 return [$g['name'] => ['group' => $group, 'vat' => $g['vat']]];
             });
 
+            // Spec tuple: [group, name, price, sku, unit, plu]
             $articleSpecs = [
-                ['Lactate', 'Lapte Zuzu 1L', 7.50, 'LAC-001'],
-                ['Lactate', 'Iaurt Danone 150g', 3.20, 'LAC-002'],
-                ['Lactate', 'Unt Meggle 200g', 12.90, 'LAC-003'],
-                ['Lactate', 'Brânză telemea 250g', 11.40, 'LAC-004'],
-                ['Lactate', 'Smântână 20% 400g', 8.30, 'LAC-005'],
-                ['Lactate', 'Cașcaval afumat 300g', 18.90, 'LAC-006'],
-                ['Panificație', 'Pâine albă 500g', 4.20, 'PAN-001'],
-                ['Panificație', 'Pâine integrală 400g', 6.80, 'PAN-002'],
-                ['Panificație', 'Chiflă simplă', 1.50, 'PAN-003'],
-                ['Panificație', 'Covrig simplu', 2.20, 'PAN-004'],
-                ['Panificație', 'Baghetă franțuzească', 5.90, 'PAN-005'],
-                ['Băuturi', 'Coca-Cola 2L', 11.50, 'BAU-001'],
-                ['Băuturi', 'Apă Dorna 2L', 4.50, 'BAU-002'],
-                ['Băuturi', 'Bere Ursus 0.5L', 5.90, 'BAU-003'],
-                ['Băuturi', 'Vin Cabernet 0.75L', 32.00, 'BAU-004'],
-                ['Băuturi', 'Suc portocale Tedi 1L', 9.90, 'BAU-005'],
-                ['Băuturi', 'Cafea Jacobs 250g', 28.50, 'BAU-006'],
-                ['Legume-Fructe', 'Mere roșii 1kg', 6.90, 'LF-001'],
-                ['Legume-Fructe', 'Banane 1kg', 7.80, 'LF-002'],
-                ['Legume-Fructe', 'Roșii 1kg', 9.50, 'LF-003'],
-                ['Legume-Fructe', 'Cartofi 1kg', 3.20, 'LF-004'],
-                ['Legume-Fructe', 'Ceapă roșie 1kg', 4.50, 'LF-005'],
-                ['Legume-Fructe', 'Salată verde buc', 5.00, 'LF-006'],
-                ['Diverse', 'Hârtie igienică 10 role', 24.90, 'DIV-001'],
-                ['Diverse', 'Detergent Ariel 2L', 38.50, 'DIV-002'],
-                ['Diverse', 'Săpun lichid 500ml', 14.90, 'DIV-003'],
-                ['Diverse', 'Pungă reutilizabilă', 1.00, 'DIV-004'],
-                ['Diverse', 'Baterii AA 4buc', 16.50, 'DIV-005'],
-                ['Diverse', 'Șervețele umede 72buc', 11.90, 'DIV-006'],
-                ['Diverse', 'Cartelă reîncărcare Orange', 20.00, 'DIV-007'],
+                ['Lactate', 'Lapte Zuzu 1L', 7.50, 'LAC-001', 'buc', null],
+                ['Lactate', 'Iaurt Danone 150g', 3.20, 'LAC-002', 'buc', null],
+                ['Lactate', 'Unt Meggle 200g', 12.90, 'LAC-003', 'buc', null],
+                ['Lactate', 'Brânză telemea', 11.40, 'LAC-004', 'kg', '10001'],
+                ['Lactate', 'Smântână 20% 400g', 8.30, 'LAC-005', 'buc', null],
+                ['Lactate', 'Cașcaval afumat', 18.90, 'LAC-006', 'kg', '10002'],
+                ['Panificație', 'Pâine albă 500g', 4.20, 'PAN-001', 'buc', null],
+                ['Panificație', 'Pâine integrală 400g', 6.80, 'PAN-002', 'buc', null],
+                ['Panificație', 'Chiflă simplă', 1.50, 'PAN-003', 'buc', null],
+                ['Panificație', 'Covrig simplu', 2.20, 'PAN-004', 'buc', null],
+                ['Panificație', 'Baghetă franțuzească', 5.90, 'PAN-005', 'buc', null],
+                ['Băuturi', 'Coca-Cola 2L', 11.50, 'BAU-001', 'buc', null],
+                ['Băuturi', 'Apă Dorna 2L', 4.50, 'BAU-002', 'buc', null],
+                ['Băuturi', 'Bere Ursus 0.5L', 5.90, 'BAU-003', 'buc', null],
+                ['Băuturi', 'Vin Cabernet 0.75L', 32.00, 'BAU-004', 'buc', null],
+                ['Băuturi', 'Suc portocale Tedi 1L', 9.90, 'BAU-005', 'buc', null],
+                ['Băuturi', 'Cafea Jacobs 250g', 28.50, 'BAU-006', 'buc', null],
+                ['Legume-Fructe', 'Mere roșii', 6.90, 'LF-001', 'kg', '10003'],
+                ['Legume-Fructe', 'Banane', 7.80, 'LF-002', 'kg', null],
+                ['Legume-Fructe', 'Roșii', 9.50, 'LF-003', 'kg', null],
+                ['Legume-Fructe', 'Cartofi', 3.20, 'LF-004', 'kg', '10004'],
+                ['Legume-Fructe', 'Ceapă roșie', 4.50, 'LF-005', 'kg', '10005'],
+                ['Legume-Fructe', 'Salată verde buc', 5.00, 'LF-006', 'buc', null],
+                ['Diverse', 'Hârtie igienică 10 role', 24.90, 'DIV-001', 'buc', null],
+                ['Diverse', 'Detergent Ariel 2L', 38.50, 'DIV-002', 'buc', null],
+                ['Diverse', 'Săpun lichid 500ml', 14.90, 'DIV-003', 'buc', null],
+                ['Diverse', 'Pungă reutilizabilă', 1.00, 'DIV-004', 'buc', null],
+                ['Diverse', 'Baterii AA 4buc', 16.50, 'DIV-005', 'buc', null],
+                ['Diverse', 'Șervețele umede 72buc', 11.90, 'DIV-006', 'buc', null],
+                ['Diverse', 'Cartelă reîncărcare Orange', 20.00, 'DIV-007', 'buc', null],
             ];
 
             $defaultGestiune = $gestiuni->firstWhere('name', 'Raion principal');
 
             foreach ($articleSpecs as $spec) {
-                [$groupName, $name, $price, $sku] = $spec;
+                [$groupName, $name, $price, $sku, $unit, $plu] = $spec;
                 $meta = $groups[$groupName];
 
                 $article = Article::firstOrCreate(
@@ -123,18 +124,21 @@ class DemoShopSeeder extends Seeder
                         'default_gestiune_id' => $defaultGestiune->id,
                         'vat_rate' => $meta['vat'],
                         'price' => $price,
-                        'unit' => 'buc',
+                        'unit' => $unit,
+                        'plu' => $plu,
                         'is_active' => true,
                     ]
                 );
 
-                // 1-2 barcodes per article
-                $numBarcodes = random_int(1, 2);
-                for ($i = 0; $i < $numBarcodes; $i++) {
-                    Barcode::firstOrCreate(
-                        ['tenant_id' => $tenant->id, 'barcode' => self::ean13(sprintf('594%09d', crc32($sku.$i) % 1_000_000_000))],
-                        ['article_id' => $article->id, 'type' => 'ean13']
-                    );
+                // 1-2 barcodes per article (skip for kg articles — they're scanned via scale stickers)
+                if ($unit !== 'kg') {
+                    $numBarcodes = random_int(1, 2);
+                    for ($i = 0; $i < $numBarcodes; $i++) {
+                        Barcode::firstOrCreate(
+                            ['tenant_id' => $tenant->id, 'barcode' => self::ean13(sprintf('594%09d', crc32($sku.$i) % 1_000_000_000))],
+                            ['article_id' => $article->id, 'type' => 'ean13']
+                        );
+                    }
                 }
 
                 foreach ($gestiuni as $g) {

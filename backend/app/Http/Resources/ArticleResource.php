@@ -25,6 +25,11 @@ class ArticleResource extends JsonResource
                 'barcode' => $b->barcode,
                 'type' => $b->type,
             ])),
+            'stock_levels' => $this->whenLoaded('stockLevels', fn () => $this->stockLevels->map(fn ($s) => [
+                'gestiune_id' => $s->gestiune_id,
+                'quantity' => (string) $s->quantity,
+            ])),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

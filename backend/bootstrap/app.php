@@ -14,7 +14,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->statefulApi();
+        // /api/v1/* uses Sanctum Personal Access Tokens (Bearer) — stateless.
+        // We deliberately do NOT call $middleware->statefulApi() here:
+        //   - PAT-protected routes don't need session/CSRF.
+        //   - statefulApi() rotates the CSRF token on every successful POST,
+        //     which broke back-to-back POS checkouts (HTTP 419 on receipt #2).
+        //   - The offline-queue replay flow couldn't carry a fresh CSRF token
+        //     anyway — it can only carry the bearer.
+        // Filament's /admin still has CSRF because the web routing group
+        // (routes/web.php) keeps Laravel's default web middleware including
+        // VerifyCsrfToken — that path is unchanged.
+        // Intentionally empty: web group already has CSRF; api group is
+        // bearer-only.
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (PosException $e, Request $request) {

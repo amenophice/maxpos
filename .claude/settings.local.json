@@ -10,7 +10,10 @@
       "Bash(git init *)",
       "PowerShell(Set-Location C:\\\\dev\\\\MaXPos\\\\backend; $packages = \"filament/filament\",\"stancl/tenancy\",\"spatie/laravel-permission\",\"laravel/sanctum\",\"laravel/cashier\",\"pestphp/pest\",\"laravel/pint\"; foreach \\($p in $packages\\) { $v = composer show $p --format=json 2>$null | ConvertFrom-Json; if \\($v\\) { Write-Output \\($p + \" => \" + $v.versions[0]\\) } })",
       "PowerShell(try { $r = Invoke-WebRequest -Uri 'http://backend.test/up' -UseBasicParsing -TimeoutSec 5; Write-Output \\(\"status=\" + $r.StatusCode\\) } catch { Write-Output \\(\"herd-probe-failed: \" + $_.Exception.Message\\) })",
-      "PowerShell(Set-Location C:\\\\dev\\\\MaXPos\\\\backend; $models = @\\(\"Gestiune\",\"Group\",\"Article\",\"Barcode\",\"Customer\",\"StockLevel\"\\); foreach \\($m in $models\\) { php artisan make:filament-resource $m --generate --no-interaction 2>&1 | Select-Object -Last 2 })"
+      "PowerShell(Set-Location C:\\\\dev\\\\MaXPos\\\\backend; $models = @\\(\"Gestiune\",\"Group\",\"Article\",\"Barcode\",\"Customer\",\"StockLevel\"\\); foreach \\($m in $models\\) { php artisan make:filament-resource $m --generate --no-interaction 2>&1 | Select-Object -Last 2 })",
+      "Bash(python *)",
+      "Bash(grep -v \"^$\")",
+      "PowerShell(pnpm lint *)"
     ]
   }
 }

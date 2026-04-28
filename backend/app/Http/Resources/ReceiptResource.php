@@ -12,6 +12,7 @@ class ReceiptResource extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'client_local_id' => $this->client_local_id,
             'location_id' => $this->location_id,
             'cash_session_id' => $this->cash_session_id,
             'customer_id' => $this->customer_id,

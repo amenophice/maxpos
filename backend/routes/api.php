@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CashSessionController;
 use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\PosController;
 use App\Http\Controllers\Api\V1\ReceiptController;
 use App\Http\Middleware\InitializeTenancyForAuthenticatedUser;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/articles', [ArticleController::class, 'index']);
         Route::get('/articles/by-barcode/{barcode}', [ArticleController::class, 'byBarcode']);
         Route::get('/customers', [CustomerController::class, 'index']);
+
+        Route::get('/pos/bootstrap', [PosController::class, 'bootstrap']);
+        Route::post('/pos/checkout', [PosController::class, 'checkout'])->middleware('can:pos.sell');
 
         Route::post('/cash-sessions/open', [CashSessionController::class, 'open'])
             ->middleware('can:pos.open-session');
