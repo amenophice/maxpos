@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware(['auth:sanctum', InitializeTenancyForAuthenticatedUser::class])->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::put('/auth/password', [AuthController::class, 'changePassword']);
         Route::get('/me', MeController::class);
 
         Route::get('/articles', [ArticleController::class, 'index']);

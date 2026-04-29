@@ -43,7 +43,8 @@
       "settings": "Setări"
     },
     "toggleSidebar": "Comută meniul",
-    "profile": "Profilul meu"
+    "profile": "Profilul meu",
+    "accountSettings": "Setări cont"
   },
   "topbar": {
     "locationFallback": "Nicio locație selectată",
@@ -67,6 +68,20 @@
       "stock": "Modulul de stoc va fi disponibil în curând.",
       "receipts": "Istoricul bonurilor va fi disponibil în curând.",
       "reports": "Rapoartele vor fi disponibile în curând."
+    }
+  },
+  "settings": {
+    "security": {
+      "title": "Securitate",
+      "changePassword": "Schimbă parola",
+      "currentPassword": "Parola curentă",
+      "newPassword": "Parola nouă",
+      "newPasswordHint": "Minim 8 caractere",
+      "confirmPassword": "Confirmă parola nouă",
+      "saveButton": "Salvează parola",
+      "saving": "Se salvează…",
+      "successToast": "Parola a fost schimbată cu succes.",
+      "wrongCurrentPassword": "Parola curentă este incorectă."
     }
   },
   "errors": {

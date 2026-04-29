@@ -1,7 +1,8 @@
 "use client";
 
-import { LogOut, Menu, Search, User as UserIcon } from "lucide-react";
+import { LogOut, Menu, Search, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { logoutAction } from "@/app/actions/auth";
 import { CatalogSyncButton } from "@/components/layout/catalog-sync-button";
@@ -34,6 +35,7 @@ export function Topbar({
   const t = useTranslations("topbar");
   const tNav = useTranslations("nav");
   const tAuth = useTranslations("auth");
+  const router = useRouter();
   const [isLoggingOut, startLogout] = useTransition();
 
   const initials = user.name
@@ -100,9 +102,9 @@ export function Topbar({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
-              <UserIcon className="mr-2 h-4 w-4" />
-              {tNav("profile")}
+            <DropdownMenuItem onSelect={() => router.push("/settings")}>
+              <Settings className="mr-2 h-4 w-4" />
+              {tNav("accountSettings")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={(e) => {

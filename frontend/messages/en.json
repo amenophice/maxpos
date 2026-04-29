@@ -37,7 +37,8 @@
       "settings": "Settings"
     },
     "toggleSidebar": "Toggle menu",
-    "profile": "My profile"
+    "profile": "My profile",
+    "accountSettings": "Account settings"
   },
   "topbar": {
     "locationFallback": "No location selected",
@@ -61,6 +62,20 @@
       "stock": "Stock module will be available soon.",
       "receipts": "Receipt history will be available soon.",
       "reports": "Reports will be available soon."
+    }
+  },
+  "settings": {
+    "security": {
+      "title": "Security",
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "newPasswordHint": "At least 8 characters",
+      "confirmPassword": "Confirm new password",
+      "saveButton": "Save password",
+      "saving": "Saving…",
+      "successToast": "Password changed successfully.",
+      "wrongCurrentPassword": "Current password is incorrect."
     }
   },
   "errors": {
