@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AdminTenantController;
 use App\Http\Controllers\Api\V1\ArticleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CashSessionController;
@@ -15,6 +16,7 @@ Route::get('/user', fn (Request $r) => ['data' => $r->user()])->middleware('auth
 
 Route::prefix('v1')->group(function () {
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/register', [AuthController::class, 'register']);
 
     Route::middleware(['auth:sanctum', InitializeTenancyForAuthenticatedUser::class])->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -42,5 +44,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/receipts/{id}/discount', [ReceiptController::class, 'applyDiscount'])->middleware('can:pos.discount');
         Route::post('/receipts/{id}/complete', [ReceiptController::class, 'complete'])->middleware('can:pos.sell');
         Route::post('/receipts/{id}/void', [ReceiptController::class, 'void'])->middleware('can:pos.void');
+
+        Route::middleware('role:super-admin')->prefix('admin')->group(function () {
+            Route::post('/tenants/{tenant}/approve', [AdminTenantController::class, 'approve']);
+            Route::post('/tenants/{tenant}/reject', [AdminTenantController::class, 'reject']);
+        });
     });
 });

@@ -11,7 +11,8 @@ const LoginSchema = z.object({
 
 export interface LoginResult {
   ok: boolean;
-  error?: "invalid" | "network" | "unknown";
+  error?: "invalid" | "network" | "unknown" | "forbidden";
+  message?: string;
 }
 
 export async function loginAction(formData: FormData): Promise<LoginResult> {
@@ -44,6 +45,10 @@ export async function loginAction(formData: FormData): Promise<LoginResult> {
 
   if (response.status === 422 || response.status === 401) {
     return { ok: false, error: "invalid" };
+  }
+  if (response.status === 403) {
+    const body = (await response.json()) as { data?: { message?: string } };
+    return { ok: false, error: "forbidden", message: body?.data?.message ?? undefined };
   }
   if (!response.ok) {
     return { ok: false, error: "unknown" };

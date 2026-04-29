@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
   const hasSession = Boolean(request.cookies.get(SESSION_COOKIE)?.value);
   const { pathname } = request.nextUrl;
 
-  const isAuthRoute = pathname === "/login";
+  const isAuthRoute = pathname === "/login" || pathname === "/register";
 
   if (!hasSession && !isAuthRoute) {
     const url = request.nextUrl.clone();

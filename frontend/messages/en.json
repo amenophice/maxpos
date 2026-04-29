@@ -22,7 +22,8 @@
       "submitting": "Checking…",
       "errorInvalid": "Invalid email or password.",
       "errorNetwork": "Could not reach the server. Check your connection.",
-      "errorUnknown": "Something went wrong."
+      "errorUnknown": "Something went wrong.",
+      "noAccount": "Don't have an account? Request access →"
     },
     "logout": { "label": "Log out" },
     "guard": { "redirecting": "Redirecting to sign in…" }
@@ -77,6 +78,23 @@
       "successToast": "Password changed successfully.",
       "wrongCurrentPassword": "Current password is incorrect."
     }
+  },
+  "register": {
+    "title": "Request access",
+    "subtitle": "Fill in your company details to create an account",
+    "companyName": "Company name",
+    "cui": "Tax ID (CUI)",
+    "cuiHint": "E.g. RO12345678 or 12345678",
+    "email": "Email address",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "confirmPassword": "Confirm password",
+    "submitButton": "Submit request",
+    "submitting": "Submitting…",
+    "successTitle": "Request submitted!",
+    "successBody": "You will be contacted within 24 hours at {email}.",
+    "backToLogin": "Back to login",
+    "alreadyHaveAccount": "Already have an account? Sign in →"
   },
   "errors": {
     "generic": "Something went wrong. Try again.",

@@ -22,7 +22,8 @@
       "submitting": "Se verifică…",
       "errorInvalid": "E-mail sau parolă incorecte.",
       "errorNetwork": "Serverul nu poate fi contactat. Verifică conexiunea.",
-      "errorUnknown": "A apărut o eroare neașteptată."
+      "errorUnknown": "A apărut o eroare neașteptată.",
+      "noAccount": "Nu ai cont? Solicită acces →"
     },
     "logout": {
       "label": "Delogare"
@@ -83,6 +84,23 @@
       "successToast": "Parola a fost schimbată cu succes.",
       "wrongCurrentPassword": "Parola curentă este incorectă."
     }
+  },
+  "register": {
+    "title": "Solicită acces",
+    "subtitle": "Completează datele firmei pentru a crea un cont",
+    "companyName": "Denumire firmă",
+    "cui": "CUI",
+    "cuiHint": "Ex: RO12345678 sau 12345678",
+    "email": "Adresă de e-mail",
+    "password": "Parolă",
+    "passwordHint": "Minim 8 caractere",
+    "confirmPassword": "Confirmă parola",
+    "submitButton": "Trimite cererea",
+    "submitting": "Se trimite…",
+    "successTitle": "Cerere trimisă cu succes!",
+    "successBody": "Vei fi contactat în maxim 24 de ore la adresa {email}.",
+    "backToLogin": "Înapoi la login",
+    "alreadyHaveAccount": "Ai deja cont? Autentifică-te →"
   },
   "errors": {
     "generic": "A apărut o eroare. Reîncearcă.",

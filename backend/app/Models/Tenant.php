@@ -21,6 +21,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'operating_mode',
             'trial_ends_at',
             'subscription_status',
+            'status',
+            'registered_at',
+            'rejection_reason',
         ];
     }
 
@@ -28,6 +31,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     {
         return [
             'trial_ends_at' => 'datetime',
+            'registered_at' => 'datetime',
             'data' => 'array',
         ];
     }

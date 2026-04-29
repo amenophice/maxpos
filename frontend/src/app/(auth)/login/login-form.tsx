@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -55,6 +56,10 @@ export function LoginForm() {
       if (result.ok) {
         router.replace("/");
         router.refresh();
+        return;
+      }
+      if (result.error === "forbidden") {
+        toast.error(result.message ?? t("errorUnknown"));
         return;
       }
       const key =
@@ -129,6 +134,14 @@ export function LoginForm() {
             </Button>
             <p className="text-xs text-muted-foreground text-center">
               {tCommon("tagline")}
+            </p>
+            <p className="text-sm text-center">
+              <Link
+                href="/register"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                {t("noAccount")}
+              </Link>
             </p>
           </form>
         </Form>
