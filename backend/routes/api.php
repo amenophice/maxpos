@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\PosController;
 use App\Http\Controllers\Api\V1\ReceiptController;
+use App\Http\Controllers\Api\V1\SyncController;
 use App\Http\Middleware\InitializeTenancyForAuthenticatedUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/receipts/{id}/discount', [ReceiptController::class, 'applyDiscount'])->middleware('can:pos.discount');
         Route::post('/receipts/{id}/complete', [ReceiptController::class, 'complete'])->middleware('can:pos.sell');
         Route::post('/receipts/{id}/void', [ReceiptController::class, 'void'])->middleware('can:pos.void');
+
+        Route::prefix('sync')->group(function () {
+            Route::post('/articles', [SyncController::class, 'upsertArticles']);
+            Route::get('/receipts/pending', [SyncController::class, 'pendingReceipts']);
+            Route::post('/receipts/{receipt}/mark-synced', [SyncController::class, 'markSynced']);
+        });
 
         Route::middleware('role:super-admin')->prefix('admin')->group(function () {
             Route::post('/tenants/{tenant}/approve', [AdminTenantController::class, 'approve']);
