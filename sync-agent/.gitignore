@@ -1,0 +1,20 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Publish output
+publish/
+
+# Local logs and state
+logs/
+state.json
+
+# Local secrets — do NOT commit
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Claude Code local settings
+.claude/settings.local.json
