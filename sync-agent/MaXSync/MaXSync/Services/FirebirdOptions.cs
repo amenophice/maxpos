@@ -7,7 +7,10 @@ public sealed class FirebirdOptions
     public string Database { get; set; } = string.Empty;
     public string Username { get; set; } = "SYSDBA";
     public string Password { get; set; } = "masterkey";
-    public string Charset { get; set; } = "WIN1252";
+    // Pastrat in config doar pentru retrocompatibilitate; ignorat la construirea
+    // sirului de conexiune. Folosim mereu UTF8 — FirebirdClient face conversia
+    // automata din charset-ul real al coloanelor (WIN1252 in Saga).
+    public string Charset { get; set; } = "UTF8";
 
     public string BuildConnectionString()
     {
@@ -18,7 +21,7 @@ public sealed class FirebirdOptions
             Database = Database,
             UserID = Username,
             Password = Password,
-            Charset = Charset,
+            Charset = "UTF8",
             ServerType = FirebirdSql.Data.FirebirdClient.FbServerType.Default,
             Pooling = true,
         };

@@ -47,8 +47,25 @@ public sealed class MaxPosApiService
             var payload = new { email = _options.Email, password = _options.Password };
             using var resp = await _http.PostAsJsonAsync("api/v1/auth/login", payload, JsonOpts, ct);
             resp.EnsureSuccessStatusCode();
-            var body = await resp.Content.ReadFromJsonAsync<LoginResponse>(JsonOpts, ct)
-                ?? throw new InvalidOperationException("Raspuns gol de la endpointul de login.");
+
+            LoginResponse? body;
+            try
+            {
+                body = await resp.Content.ReadFromJsonAsync<LoginResponse>(JsonOpts, ct);
+            }
+            catch (JsonException)
+            {
+                var raw = await resp.Content.ReadAsStringAsync(ct);
+                _logger.LogError(
+                    "Esec parsare JSON la login. Status={Status} ContentType={ContentType} Raw (primele 500 caractere): {Raw}",
+                    (int)resp.StatusCode,
+                    resp.Content.Headers.ContentType?.ToString(),
+                    raw.Length > 500 ? raw[..500] : raw);
+                throw;
+            }
+
+            if (body is null)
+                throw new InvalidOperationException("Raspuns gol de la endpointul de login.");
             _token = body.Token ?? body.Data?.Token
                 ?? throw new InvalidOperationException("Tokenul lipseste din raspunsul de login.");
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
@@ -86,8 +103,21 @@ public sealed class MaxPosApiService
         using var resp = await SendWithReauthAsync(
             () => new HttpRequestMessage(HttpMethod.Get, "api/v1/sync/receipts/pending"),
             ct);
-        var body = await resp.Content.ReadFromJsonAsync<PendingReceiptsResponse>(JsonOpts, ct);
-        return body?.Data ?? new List<MaxPosReceipt>();
+        try
+        {
+            var body = await resp.Content.ReadFromJsonAsync<PendingReceiptsResponse>(JsonOpts, ct);
+            return body?.Data ?? new List<MaxPosReceipt>();
+        }
+        catch (JsonException)
+        {
+            var raw = await resp.Content.ReadAsStringAsync(ct);
+            _logger.LogError(
+                "Esec parsare JSON la GET receipts/pending. Status={Status} ContentType={ContentType} Raw (primele 500 caractere): {Raw}",
+                (int)resp.StatusCode,
+                resp.Content.Headers.ContentType?.ToString(),
+                raw.Length > 500 ? raw[..500] : raw);
+            throw;
+        }
     }
 
     public async Task MarkReceiptSyncedAsync(long receiptId, CancellationToken ct)
