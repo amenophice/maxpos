@@ -91,14 +91,20 @@ public sealed class FirebirdService
     }
 
     // Insereaza un bon fiscal complet (header + linii) intr-o singura tranzactie.
+    //
+    // Specific Saga v602:
+    // - IESIRI nu are trigger / generator; ID_IESIRE se aloca ca MAX(ID_IESIRE) + 1
+    //   in cadrul tranzactiei (SERIALIZABLE previne ID-uri duplicate).
+    // - IES_DET are trigger TRGIES_DET_PK care alimenteaza PK din generatorul
+    //   GEN_IES_DET_PK; nu trimitem PK la INSERT, lasam triggerul sa il puna.
     public async Task InsertReceiptAsync(MaxPosReceipt receipt, CancellationToken ct)
     {
         await using var conn = OpenConnection();
-        await using var tx = await conn.BeginTransactionAsync(ct);
+        await using var tx = await conn.BeginTransactionAsync(
+            System.Data.IsolationLevel.Serializable, ct);
         try
         {
-            // TODO: verifica numele real al generatorului in Saga v602.
-            const string nextIdSql = "SELECT GEN_ID(GEN_IESIRI_ID, 1) AS NEW_ID FROM RDB$DATABASE";
+            const string nextIdSql = "SELECT COALESCE(MAX(ID_IESIRE), 0) + 1 FROM IESIRI";
             long newIesireId;
             await using (var cmd = new FbCommand(nextIdSql, conn, (FbTransaction)tx))
             {
@@ -116,7 +122,7 @@ public sealed class FirebirdService
             await using (var cmd = new FbCommand(insertHeaderSql, conn, (FbTransaction)tx))
             {
                 cmd.Parameters.AddWithValue("@id", newIesireId);
-                cmd.Parameters.AddWithValue("@nr", Truncate(receipt.Number, 16));
+                cmd.Parameters.AddWithValue("@nr", BuildNrIesire(receipt.Number));
                 cmd.Parameters.AddWithValue("@cod", Truncate(receipt.CustomerCode ?? string.Empty, 8));
                 cmd.Parameters.AddWithValue("@den", Truncate(receipt.CustomerName ?? string.Empty, 64));
                 cmd.Parameters.AddWithValue("@data", receipt.IssuedAt.Date);
@@ -126,26 +132,18 @@ public sealed class FirebirdService
                 await cmd.ExecuteNonQueryAsync(ct);
             }
 
-            const string nextLineIdSql = "SELECT GEN_ID(GEN_IES_DET_PK, 1) AS NEW_PK FROM RDB$DATABASE";
+            // PK omis intentionat — il pune triggerul TRGIES_DET_PK din GEN_IES_DET_PK.
             const string insertLineSql = @"
                 INSERT INTO IES_DET
-                    (PK, ID_IESIRE, GESTIUNE, DEN_GEST, COD, DENUMIRE, UM, TVA_ART,
+                    (ID_IESIRE, GESTIUNE, DEN_GEST, COD, DENUMIRE, UM, TVA_ART,
                      CANTITATE, PRET_UNITAR, PU_TVA, VALOARE, TVA_DED, TOTAL, DISCOUNT, ADAOS)
                 VALUES
-                    (@pk, @id_iesire, @gest, @den_gest, @cod, @den, @um, @tva_art,
+                    (@id_iesire, @gest, @den_gest, @cod, @den, @um, @tva_art,
                      @cant, @pret, @pu_tva, @valoare, @tva_ded, @total, 0, 0)";
 
             foreach (var item in receipt.Items)
             {
-                long newPk;
-                // TODO: verifica numele real al generatorului in Saga v602.
-                await using (var cmd = new FbCommand(nextLineIdSql, conn, (FbTransaction)tx))
-                {
-                    newPk = Convert.ToInt64(await cmd.ExecuteScalarAsync(ct));
-                }
-
                 await using var insertCmd = new FbCommand(insertLineSql, conn, (FbTransaction)tx);
-                insertCmd.Parameters.AddWithValue("@pk", newPk);
                 insertCmd.Parameters.AddWithValue("@id_iesire", newIesireId);
                 insertCmd.Parameters.AddWithValue("@gest", Truncate(receipt.GestiuneCode, 4));
                 insertCmd.Parameters.AddWithValue("@den_gest", Truncate(receipt.GestiuneName, 24));
@@ -172,6 +170,17 @@ public sealed class FirebirdService
             await tx.RollbackAsync(ct);
             throw;
         }
+    }
+
+    // Bonurile MaXPos sunt marcate cu prefix "MXPS" pentru a le distinge in Saga
+    // de bonurile generate de seriile de gestiune existente (ex. "ELPASO3.6").
+    private static string BuildNrIesire(string receiptNumber)
+    {
+        var raw = receiptNumber ?? string.Empty;
+        var prefixed = raw.StartsWith("MXPS", StringComparison.OrdinalIgnoreCase)
+            ? raw
+            : "MXPS" + (raw.StartsWith('-') ? raw : "-" + raw);
+        return Truncate(prefixed, 16);
     }
 
     private static string Truncate(string value, int maxLength)
