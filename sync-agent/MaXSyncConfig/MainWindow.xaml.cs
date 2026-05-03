@@ -164,9 +164,11 @@ public partial class MainWindow : Window
                 ServiceStatusDot.Fill = DotGreen;
                 ServiceStatusText.Text = "Serviciu: Activ ●";
                 LblServiceHint.Text = string.Empty;
+                BtnServiceInstall.Visibility = Visibility.Collapsed;
                 BtnServiceStart.Visibility = Visibility.Collapsed;
                 BtnServiceStop.Visibility = Visibility.Visible;
                 BtnServiceRestart.Visibility = Visibility.Visible;
+                BtnServiceUninstall.Visibility = Visibility.Collapsed;
                 BtnServiceStop.IsEnabled = true;
                 BtnServiceRestart.IsEnabled = true;
                 break;
@@ -174,28 +176,59 @@ public partial class MainWindow : Window
                 ServiceStatusDot.Fill = DotOrange;
                 ServiceStatusText.Text = "Serviciu: Oprit ●";
                 LblServiceHint.Text = string.Empty;
+                BtnServiceInstall.Visibility = Visibility.Collapsed;
                 BtnServiceStart.Visibility = Visibility.Visible;
                 BtnServiceStop.Visibility = Visibility.Collapsed;
                 BtnServiceRestart.Visibility = Visibility.Collapsed;
+                BtnServiceUninstall.Visibility = Visibility.Visible;
                 BtnServiceStart.IsEnabled = true;
+                BtnServiceUninstall.IsEnabled = true;
                 break;
             case ServiceState.NotInstalled:
                 ServiceStatusDot.Fill = DotGrey;
                 ServiceStatusText.Text = "Serviciu: neinstalat ●";
                 LblServiceHint.Text = "Serviciul MaXSync nu este instalat. Rulați install-service.ps1 ca administrator.";
+                BtnServiceInstall.Visibility = Visibility.Visible;
                 BtnServiceStart.Visibility = Visibility.Collapsed;
                 BtnServiceStop.Visibility = Visibility.Collapsed;
                 BtnServiceRestart.Visibility = Visibility.Collapsed;
+                BtnServiceUninstall.Visibility = Visibility.Collapsed;
+                BtnServiceInstall.IsEnabled = true;
                 break;
             default:
                 ServiceStatusDot.Fill = DotRed;
                 ServiceStatusText.Text = "Serviciu: tranziție ●";
                 LblServiceHint.Text = string.Empty;
+                BtnServiceInstall.Visibility = Visibility.Collapsed;
                 BtnServiceStart.Visibility = Visibility.Collapsed;
                 BtnServiceStop.Visibility = Visibility.Collapsed;
                 BtnServiceRestart.Visibility = Visibility.Collapsed;
+                BtnServiceUninstall.Visibility = Visibility.Collapsed;
                 break;
         }
+    }
+
+    private string? FindMaXSyncExe()
+    {
+        var exeDir = AppContext.BaseDirectory;
+        var candidates = new List<string>
+        {
+            Path.GetFullPath(Path.Combine(exeDir, "..", "MaXSync", "MaXSync.exe")),
+            Path.Combine(exeDir, "MaXSync.exe"),
+        };
+
+        if (_configPath is not null)
+        {
+            var configDir = Path.GetDirectoryName(_configPath);
+            if (!string.IsNullOrEmpty(configDir))
+                candidates.Add(Path.Combine(configDir, "MaXSync.exe"));
+        }
+
+        foreach (var c in candidates)
+        {
+            if (File.Exists(c)) return c;
+        }
+        return null;
     }
 
     // ----- Service control -----
@@ -351,23 +384,146 @@ public partial class MainWindow : Window
 
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
+        if (SaveConfig()) ShowSavedToast();
+    }
+
+    private bool SaveConfig()
+    {
         if (_configPath is null)
         {
             MessageBox.Show(this, "Calea fișierului de configurare nu este setată.", "Eroare",
                 MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
+            return false;
         }
 
         CollectFromUi();
         try
         {
             _configService.Save(_configPath, _settings);
-            ShowSavedToast();
+            return true;
         }
         catch (Exception ex)
         {
             MessageBox.Show(this, $"Salvare eșuată:\n\n{ex.Message}", "Eroare",
                 MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+    }
+
+    // ----- Install / Uninstall -----
+
+    private void BtnServiceInstall_Click(object sender, RoutedEventArgs e)
+    {
+        var exePath = FindMaXSyncExe();
+        if (exePath is null)
+        {
+            MessageBox.Show(this,
+                "Nu am găsit MaXSync.exe. Asigurați-vă că MaXSyncConfig.exe și MaXSync.exe sunt în același folder părinte.",
+                "MaXSync.exe lipsă",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (!SaveConfig()) return;
+
+        BtnServiceInstall.IsEnabled = false;
+        try
+        {
+            _serviceControl.InstallService(
+                exePath,
+                "MaXPos Saga Sync Agent",
+                "Sincronizeaza date intre Saga Firebird si MaXPos POS");
+
+            // Lasa SCM sa proceseze inregistrarea inainte sa il interogam.
+            Thread.Sleep(2000);
+            RefreshServiceStatus();
+
+            if (_serviceControl.GetState() == ServiceState.NotInstalled)
+            {
+                MessageBox.Show(this,
+                    "Serviciul a fost creat, dar nu apare încă în SCM. Reîncercați după câteva secunde.",
+                    "Atenție", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            MessageBox.Show(this,
+                "Serviciul MaXSync a fost instalat cu succes!",
+                "Instalare reușită", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            try
+            {
+                _serviceControl.Start();
+            }
+            catch (Exception startEx)
+            {
+                MessageBox.Show(this,
+                    $"Serviciul a fost instalat, dar nu a putut fi pornit:\n\n{startEx.Message}",
+                    "Atenție", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            RefreshServiceStatus();
+        }
+        catch (ServiceControlService.ElevationCancelledException)
+        {
+            MessageBox.Show(this,
+                "Instalarea necesită drepturi de Administrator.",
+                "Operațiune anulată", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (ServiceControlService.ScCommandException ex)
+        {
+            MessageBox.Show(this,
+                $"Eroare la instalare. Verificați că MaXSync.exe există.\n\nDetalii: {ex.Message}",
+                "Eroare la instalare", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this,
+                $"Eroare la instalare:\n\n{ex.Message}",
+                "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            BtnServiceInstall.IsEnabled = true;
+        }
+    }
+
+    private void BtnServiceUninstall_Click(object sender, RoutedEventArgs e)
+    {
+        var confirm = MessageBox.Show(this,
+            "Sigur doriți să dezinstalați serviciul MaXSync?",
+            "Confirmare dezinstalare",
+            MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+        if (confirm != MessageBoxResult.Yes) return;
+
+        BtnServiceUninstall.IsEnabled = false;
+        try
+        {
+            try { _serviceControl.Stop(TimeSpan.FromSeconds(15)); }
+            catch { /* poate sa fie deja oprit */ }
+
+            _serviceControl.UninstallService();
+
+            Thread.Sleep(1500);
+            RefreshServiceStatus();
+
+            MessageBox.Show(this,
+                "Serviciul MaXSync a fost dezinstalat.",
+                "Dezinstalare reușită", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (ServiceControlService.ElevationCancelledException)
+        {
+            MessageBox.Show(this,
+                "Dezinstalarea necesită drepturi de Administrator.",
+                "Operațiune anulată", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this,
+                $"Eroare la dezinstalare:\n\n{ex.Message}",
+                "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            BtnServiceUninstall.IsEnabled = true;
         }
     }
 

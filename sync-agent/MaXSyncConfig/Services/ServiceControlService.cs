@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Diagnostics;
 using System.ServiceProcess;
 
 namespace MaXSyncConfig.Services;
@@ -63,5 +65,68 @@ public sealed class ServiceControlService
         }
         sc.Start();
         sc.WaitForStatus(ServiceControllerStatus.Running, t);
+    }
+
+    public sealed class ElevationCancelledException : Exception
+    {
+        public ElevationCancelledException() : base("Operațiunea necesită drepturi de Administrator.") { }
+    }
+
+    public sealed class ScCommandException : Exception
+    {
+        public int ExitCode { get; }
+        public ScCommandException(int exitCode, string message) : base(message)
+        {
+            ExitCode = exitCode;
+        }
+    }
+
+    public void InstallService(string exePath, string displayName, string description)
+    {
+        // sc.exe asteapta sintaxa "key= value" (cu spatiu DUPA semnul egal).
+        var binPathArg = $"binPath= \"\\\"{exePath}\\\"\"";
+        var displayArg = $"DisplayName= \"{displayName}\"";
+        RunSc($"create {ServiceName} {binPathArg} {displayArg} start= auto");
+        RunSc($"description {ServiceName} \"{description}\"");
+    }
+
+    public void UninstallService()
+    {
+        // Daca ruleaza, opreste-l intai (ignora orice eroare).
+        try { RunSc($"stop {ServiceName}"); } catch { /* poate sa fie deja oprit */ }
+        RunSc($"delete {ServiceName}");
+    }
+
+    private static void RunSc(string arguments)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "sc.exe",
+            Arguments = arguments,
+            UseShellExecute = true,
+            Verb = "runas",
+            CreateNoWindow = true,
+            WindowStyle = ProcessWindowStyle.Hidden,
+        };
+
+        Process? p;
+        try
+        {
+            p = Process.Start(psi);
+        }
+        catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
+        {
+            // ERROR_CANCELLED — utilizatorul a respins promptul UAC.
+            throw new ElevationCancelledException();
+        }
+
+        if (p is null) throw new InvalidOperationException("Nu am putut porni sc.exe.");
+        p.WaitForExit();
+
+        if (p.ExitCode != 0)
+        {
+            throw new ScCommandException(p.ExitCode,
+                $"sc.exe {arguments.Split(' ')[0]} a esuat cu codul {p.ExitCode}.");
+        }
     }
 }

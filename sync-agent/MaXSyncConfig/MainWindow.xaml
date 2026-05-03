@@ -253,6 +253,11 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="BtnServiceInstall"
+                            Style="{StaticResource SuccessButton}"
+                            Content="Instalează serviciul"
+                            Margin="0,0,8,0"
+                            Click="BtnServiceInstall_Click" />
                     <Button x:Name="BtnServiceStart"
                             Style="{StaticResource SuccessButton}"
                             Content="Pornește serviciul"
@@ -266,7 +271,12 @@
                     <Button x:Name="BtnServiceRestart"
                             Style="{StaticResource WarningButton}"
                             Content="Repornește serviciul"
+                            Margin="0,0,8,0"
                             Click="BtnServiceRestart_Click" />
+                    <Button x:Name="BtnServiceUninstall"
+                            Style="{StaticResource DangerButton}"
+                            Content="Dezinstalează serviciul"
+                            Click="BtnServiceUninstall_Click" />
                 </StackPanel>
             </Grid>
         </Border>
