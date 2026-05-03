@@ -24,10 +24,10 @@ public partial class MainWindow : Window
     private string? _configPath;
     private AppSettings _settings = new();
 
-    private static readonly SolidColorBrush DotGreen = new(Color.FromRgb(0x3A, 0x7A, 0x3A));
+    private static readonly SolidColorBrush DotGreen = new(Color.FromRgb(0x4C, 0xAF, 0x50));
     private static readonly SolidColorBrush DotRed = new(Color.FromRgb(0xB5, 0x44, 0x3A));
-    private static readonly SolidColorBrush DotOrange = new(Color.FromRgb(0xC9, 0x7A, 0x2A));
-    private static readonly SolidColorBrush DotGrey = new(Color.FromRgb(0x88, 0x88, 0x88));
+    private static readonly SolidColorBrush DotOrange = new(Color.FromRgb(0xFF, 0x98, 0x00));
+    private static readonly SolidColorBrush DotGrey = new(Color.FromRgb(0x9E, 0x9E, 0x9E));
 
     public MainWindow()
     {
@@ -164,33 +164,36 @@ public partial class MainWindow : Window
                 ServiceStatusDot.Fill = DotGreen;
                 ServiceStatusText.Text = "Serviciu: Activ ●";
                 LblServiceHint.Text = string.Empty;
-                BtnServiceStart.IsEnabled = false;
+                BtnServiceStart.Visibility = Visibility.Collapsed;
+                BtnServiceStop.Visibility = Visibility.Visible;
+                BtnServiceRestart.Visibility = Visibility.Visible;
                 BtnServiceStop.IsEnabled = true;
                 BtnServiceRestart.IsEnabled = true;
                 break;
             case ServiceState.Stopped:
-                ServiceStatusDot.Fill = DotRed;
+                ServiceStatusDot.Fill = DotOrange;
                 ServiceStatusText.Text = "Serviciu: Oprit ●";
                 LblServiceHint.Text = string.Empty;
+                BtnServiceStart.Visibility = Visibility.Visible;
+                BtnServiceStop.Visibility = Visibility.Collapsed;
+                BtnServiceRestart.Visibility = Visibility.Collapsed;
                 BtnServiceStart.IsEnabled = true;
-                BtnServiceStop.IsEnabled = false;
-                BtnServiceRestart.IsEnabled = true;
                 break;
             case ServiceState.NotInstalled:
                 ServiceStatusDot.Fill = DotGrey;
                 ServiceStatusText.Text = "Serviciu: neinstalat ●";
                 LblServiceHint.Text = "Serviciul MaXSync nu este instalat. Rulați install-service.ps1 ca administrator.";
-                BtnServiceStart.IsEnabled = false;
-                BtnServiceStop.IsEnabled = false;
-                BtnServiceRestart.IsEnabled = false;
+                BtnServiceStart.Visibility = Visibility.Collapsed;
+                BtnServiceStop.Visibility = Visibility.Collapsed;
+                BtnServiceRestart.Visibility = Visibility.Collapsed;
                 break;
             default:
-                ServiceStatusDot.Fill = DotOrange;
+                ServiceStatusDot.Fill = DotRed;
                 ServiceStatusText.Text = "Serviciu: tranziție ●";
                 LblServiceHint.Text = string.Empty;
-                BtnServiceStart.IsEnabled = false;
-                BtnServiceStop.IsEnabled = false;
-                BtnServiceRestart.IsEnabled = false;
+                BtnServiceStart.Visibility = Visibility.Collapsed;
+                BtnServiceStop.Visibility = Visibility.Collapsed;
+                BtnServiceRestart.Visibility = Visibility.Collapsed;
                 break;
         }
     }
