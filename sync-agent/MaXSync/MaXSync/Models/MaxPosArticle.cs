@@ -17,7 +17,7 @@ public sealed class MaxPosArticle
     [JsonPropertyName("vat_rate")]
     public decimal VatRate { get; set; }
 
-    [JsonPropertyName("price_with_vat")]
+    [JsonPropertyName("price")]
     public decimal PriceWithVat { get; set; }
 
     [JsonPropertyName("plu")]
@@ -26,7 +26,7 @@ public sealed class MaxPosArticle
     [JsonPropertyName("barcode")]
     public string? Barcode { get; set; }
 
-    [JsonPropertyName("group_code")]
+    [JsonPropertyName("group_saga_cod")]
     public string? GroupCode { get; set; }
 
     [JsonPropertyName("active")]
