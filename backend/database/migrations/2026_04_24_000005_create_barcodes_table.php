@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('barcodes', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->cascadeOnDelete();
+            $table->foreignUuid('article_id')->constrained('articles')->cascadeOnDelete();
+            $table->string('barcode');
+            $table->enum('type', ['ean13', 'ean8', 'code128', 'internal', 'scale']);
+            $table->timestamps();
+
+            $table->unique(['tenant_id', 'barcode']);
+            $table->index(['tenant_id', 'article_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('barcodes');
+    }
+};

@@ -1,0 +1,205 @@
+{
+  "common": {
+    "appName": "MaXPos",
+    "tagline": "A modern point-of-sale for your shop",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "search": "Search",
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials to continue",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@your-shop.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Sign in",
+      "submitting": "Checking…",
+      "errorInvalid": "Invalid email or password.",
+      "errorNetwork": "Could not reach the server. Check your connection.",
+      "errorUnknown": "Something went wrong.",
+      "noAccount": "Don't have an account? Request access →"
+    },
+    "logout": { "label": "Log out" },
+    "guard": { "redirecting": "Redirecting to sign in…" }
+  },
+  "nav": {
+    "groups": { "main": "Main" },
+    "items": {
+      "sale": "Sale",
+      "receipts": "Receipts",
+      "stock": "Stock",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "toggleSidebar": "Toggle menu",
+    "profile": "My profile",
+    "accountSettings": "Account settings"
+  },
+  "topbar": {
+    "locationFallback": "No location selected",
+    "sessionOpen": "Session open",
+    "sessionClosed": "No active session",
+    "sessionAmount": "{amount} lei in drawer",
+    "searchPlaceholder": "Scan or search product…"
+  },
+  "dashboard": {
+    "welcome": "Welcome, {name}!",
+    "welcomeNoName": "Welcome!",
+    "sessionCardTitle": "Cash session",
+    "sessionOpenText": "You have an active session opened at {time}.",
+    "sessionNoneText": "No active session. Open one before starting to sell.",
+    "openSessionCta": "Open session",
+    "goToSale": "Go to sale",
+    "quickLinks": "Quick links",
+    "placeholder": {
+      "sale": "The sale screen will be available soon.",
+      "settings": "Settings will be available soon.",
+      "stock": "Stock module will be available soon.",
+      "receipts": "Receipt history will be available soon.",
+      "reports": "Reports will be available soon."
+    }
+  },
+  "settings": {
+    "security": {
+      "title": "Security",
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "newPasswordHint": "At least 8 characters",
+      "confirmPassword": "Confirm new password",
+      "saveButton": "Save password",
+      "saving": "Saving…",
+      "successToast": "Password changed successfully.",
+      "wrongCurrentPassword": "Current password is incorrect."
+    }
+  },
+  "register": {
+    "title": "Request access",
+    "subtitle": "Fill in your company details to create an account",
+    "companyName": "Company name",
+    "cui": "Tax ID (CUI)",
+    "cuiHint": "E.g. RO12345678 or 12345678",
+    "email": "Email address",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "confirmPassword": "Confirm password",
+    "submitButton": "Submit request",
+    "submitting": "Submitting…",
+    "successTitle": "Request submitted!",
+    "successBody": "You will be contacted within 24 hours at {email}.",
+    "backToLogin": "Back to login",
+    "alreadyHaveAccount": "Already have an account? Sign in →"
+  },
+  "errors": {
+    "generic": "Something went wrong. Try again.",
+    "notFound": "The page you requested does not exist."
+  },
+  "pos": {
+    "searchPlaceholder": "Scan barcode or search by name / SKU…",
+    "searchClearAria": "Clear search",
+    "allGroups": "All",
+    "emptyReceiptTitle": "New receipt",
+    "emptyReceiptBody": "Scan the first product or pick one from the list.",
+    "receiptTitle": "Current receipt",
+    "attachCustomer": "Attach customer",
+    "customerAttached": "Customer: {name}",
+    "removeCustomer": "Remove customer",
+    "subtotal": "Subtotal",
+    "vat": "VAT",
+    "discount": "Discount",
+    "total": "TOTAL",
+    "checkout": "Check out",
+    "applyDiscount": "Apply receipt discount",
+    "articleNoStockBadge": "low stock",
+    "lineQtyAria": "Quantity",
+    "lineRemoveAria": "Remove line",
+    "shortcutsTitle": "Shortcuts",
+    "shortcutsSearch": "Focus search",
+    "shortcutsCheckout": "Open checkout",
+    "shortcutsEsc": "Close dialog",
+    "shortcutsDiscount": "Receipt discount",
+    "shortcutsCustomer": "Attach customer",
+    "syncingToast": "Syncing catalog…",
+    "firstSyncToast": "Downloading catalog for the first time…",
+    "syncedToast": "Catalog synced ({count} entries)",
+    "syncedToastDetail": "Catalog synced ({articles} articles, {groups} groups)",
+    "syncFailedToast": "Sync failed — using local catalog.",
+    "syncButton": {
+      "tooltipIdle": "Sync catalog",
+      "tooltipLoading": "Syncing…",
+      "tooltipSuccess": "Synced",
+      "tooltipError": "Sync failed",
+      "tooltipOffline": "Unavailable offline",
+      "lastSyncJustNow": "Last sync: a few seconds ago",
+      "lastSyncMinutes": "Last sync: {minutes} min ago",
+      "lastSyncAt": "Last sync: at {time}",
+      "lastSyncNever": "Never synced"
+    },
+    "noSessionWarning": "No open cash session. Go back to the dashboard to open one.",
+    "noSessionBannerTitle": "Cash session not active",
+    "noSessionBannerBody": "Open a session from the dashboard before you start selling.",
+    "noSessionBannerCta": "Open at dashboard",
+    "noSessionTooltip": "No open cash session",
+    "emptyCatalogTitle": "Catalog is empty",
+    "emptyCatalogBody": "Use the sync button in the topbar to download the articles.",
+    "scaleBarcodePluUnknown": "Unknown PLU: {plu}",
+    "scaleBarcodeWrongUnit": "Scale barcode points to \"{name}\" — article is not sold by kg/l (unit: {unit}).",
+    "customerDialog": {
+      "title": "Pick customer",
+      "searchPlaceholder": "Search by name or tax ID…",
+      "none": "No customer (walk-in)",
+      "empty": "No customers found."
+    },
+    "discountDialog": {
+      "title": "Receipt discount",
+      "body": "Enter the amount to subtract from the receipt total.",
+      "field": "Amount",
+      "apply": "Apply"
+    },
+    "checkoutDialog": {
+      "title": "Checkout",
+      "toPay": "To pay",
+      "remaining": "Remaining",
+      "paid": "Paid",
+      "change": "Change",
+      "chooseMethod": "Choose payment method",
+      "method": {
+        "cash": "Cash",
+        "card": "Card",
+        "voucher": "Voucher",
+        "modern": "Modern (Apple / Google Pay)",
+        "transfer": "Bank transfer"
+      },
+      "quickCash": "Quick cash",
+      "quickCashHint": "Click an amount to add the payment directly",
+      "amount": "Amount",
+      "addPayment": "Add partial payment",
+      "addPaymentHint": "For custom amounts (e.g. 26.50 lei)",
+      "changeDue": "Change due: {amount}",
+      "finalize": "Finalize and print",
+      "submitting": "Processing…",
+      "successTitle": "Receipt completed",
+      "successSubtitle": "Receipt #{number} • {total}",
+      "successPrint": "Receipt printed fiscally (placeholder)",
+      "successNewReceipt": "New receipt",
+      "queuedTitle": "Saved locally",
+      "queuedSubtitle": "Will sync automatically once back online.",
+      "errorBusiness": "Backend rejected receipt: {message}",
+      "errorUnknown": "Unexpected error."
+    },
+    "queue": {
+      "badge": "{count} queued",
+      "drawerTitle": "Queued receipts",
+      "drawerEmpty": "Queue is empty.",
+      "statusPending": "Pending",
+      "statusFailed": "Failed",
+      "retryAll": "Retry all"
+    }
+  }
+}

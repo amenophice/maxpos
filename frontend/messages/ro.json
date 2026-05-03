@@ -1,0 +1,211 @@
+{
+  "common": {
+    "appName": "MaXPos",
+    "tagline": "Sistem de vânzare modern pentru magazinul tău",
+    "loading": "Se încarcă…",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "back": "Înapoi",
+    "search": "Caută",
+    "online": "Online",
+    "offline": "Fără conexiune"
+  },
+  "auth": {
+    "login": {
+      "title": "Autentificare",
+      "subtitle": "Introdu datele de acces pentru a continua",
+      "emailLabel": "Adresă de e-mail",
+      "emailPlaceholder": "nume@magazinul-tau.ro",
+      "passwordLabel": "Parolă",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Autentificare",
+      "submitting": "Se verifică…",
+      "errorInvalid": "E-mail sau parolă incorecte.",
+      "errorNetwork": "Serverul nu poate fi contactat. Verifică conexiunea.",
+      "errorUnknown": "A apărut o eroare neașteptată.",
+      "noAccount": "Nu ai cont? Solicită acces →"
+    },
+    "logout": {
+      "label": "Delogare"
+    },
+    "guard": {
+      "redirecting": "Te redirecționăm către autentificare…"
+    }
+  },
+  "nav": {
+    "groups": {
+      "main": "Principal"
+    },
+    "items": {
+      "sale": "Vânzare",
+      "receipts": "Istoric bonuri",
+      "stock": "Stoc",
+      "reports": "Rapoarte",
+      "settings": "Setări"
+    },
+    "toggleSidebar": "Comută meniul",
+    "profile": "Profilul meu",
+    "accountSettings": "Setări cont"
+  },
+  "topbar": {
+    "locationFallback": "Nicio locație selectată",
+    "sessionOpen": "Sesiune deschisă",
+    "sessionClosed": "Nicio sesiune activă",
+    "sessionAmount": "{amount} lei în casă",
+    "searchPlaceholder": "Scanează sau caută produs…"
+  },
+  "dashboard": {
+    "welcome": "Bine ai venit, {name}!",
+    "welcomeNoName": "Bine ai venit!",
+    "sessionCardTitle": "Sesiune de casă",
+    "sessionOpenText": "Ai o sesiune activă deschisă la {time}.",
+    "sessionNoneText": "Nu ai o sesiune activă. Deschide una înainte de a începe vânzarea.",
+    "openSessionCta": "Deschide sesiune",
+    "goToSale": "Mergi la vânzare",
+    "quickLinks": "Acces rapid",
+    "placeholder": {
+      "sale": "Ecranul de vânzare va fi disponibil în curând.",
+      "settings": "Setările vor fi disponibile în curând.",
+      "stock": "Modulul de stoc va fi disponibil în curând.",
+      "receipts": "Istoricul bonurilor va fi disponibil în curând.",
+      "reports": "Rapoartele vor fi disponibile în curând."
+    }
+  },
+  "settings": {
+    "security": {
+      "title": "Securitate",
+      "changePassword": "Schimbă parola",
+      "currentPassword": "Parola curentă",
+      "newPassword": "Parola nouă",
+      "newPasswordHint": "Minim 8 caractere",
+      "confirmPassword": "Confirmă parola nouă",
+      "saveButton": "Salvează parola",
+      "saving": "Se salvează…",
+      "successToast": "Parola a fost schimbată cu succes.",
+      "wrongCurrentPassword": "Parola curentă este incorectă."
+    }
+  },
+  "register": {
+    "title": "Solicită acces",
+    "subtitle": "Completează datele firmei pentru a crea un cont",
+    "companyName": "Denumire firmă",
+    "cui": "CUI",
+    "cuiHint": "Ex: RO12345678 sau 12345678",
+    "email": "Adresă de e-mail",
+    "password": "Parolă",
+    "passwordHint": "Minim 8 caractere",
+    "confirmPassword": "Confirmă parola",
+    "submitButton": "Trimite cererea",
+    "submitting": "Se trimite…",
+    "successTitle": "Cerere trimisă cu succes!",
+    "successBody": "Vei fi contactat în maxim 24 de ore la adresa {email}.",
+    "backToLogin": "Înapoi la login",
+    "alreadyHaveAccount": "Ai deja cont? Autentifică-te →"
+  },
+  "errors": {
+    "generic": "A apărut o eroare. Reîncearcă.",
+    "notFound": "Pagina căutată nu există."
+  },
+  "pos": {
+    "searchPlaceholder": "Scanează cod de bare sau caută după nume / SKU…",
+    "searchClearAria": "Curăță căutarea",
+    "allGroups": "Toate",
+    "emptyReceiptTitle": "Bon nou",
+    "emptyReceiptBody": "Scanează primul produs sau alege din listă.",
+    "receiptTitle": "Bon curent",
+    "attachCustomer": "Atașează client",
+    "customerAttached": "Client: {name}",
+    "removeCustomer": "Scoate client",
+    "subtotal": "Subtotal",
+    "vat": "TVA",
+    "discount": "Discount",
+    "total": "TOTAL",
+    "checkout": "Încasează",
+    "applyDiscount": "Aplică discount bon",
+    "articleNoStockBadge": "stoc insuficient",
+    "lineQtyAria": "Cantitate",
+    "lineRemoveAria": "Elimină linie",
+    "shortcutsTitle": "Scurtături",
+    "shortcutsSearch": "Focus pe căutare",
+    "shortcutsCheckout": "Deschide încasare",
+    "shortcutsEsc": "Închide dialog",
+    "shortcutsDiscount": "Discount bon",
+    "shortcutsCustomer": "Atașează client",
+    "syncingToast": "Se sincronizează catalogul…",
+    "firstSyncToast": "Se descarcă catalogul pentru prima dată…",
+    "syncedToast": "Catalog sincronizat ({count} intrări)",
+    "syncedToastDetail": "Catalog sincronizat ({articles} articole, {groups} grupe)",
+    "syncFailedToast": "Sincronizare eșuată — se folosește catalogul local.",
+    "syncButton": {
+      "tooltipIdle": "Sincronizează catalogul",
+      "tooltipLoading": "Sincronizare în curs…",
+      "tooltipSuccess": "Sincronizat",
+      "tooltipError": "Eroare la sincronizare",
+      "tooltipOffline": "Indisponibil offline",
+      "lastSyncJustNow": "Ultima sincronizare: acum câteva secunde",
+      "lastSyncMinutes": "Ultima sincronizare: acum {minutes} minute",
+      "lastSyncAt": "Ultima sincronizare: la {time}",
+      "lastSyncNever": "Niciodată sincronizat"
+    },
+    "noSessionWarning": "Nu ai o sesiune deschisă. Treci pe dashboard și deschide una.",
+    "noSessionBannerTitle": "Sesiune de casă inactivă",
+    "noSessionBannerBody": "Deschide o sesiune din dashboard înainte de a începe vânzarea.",
+    "noSessionBannerCta": "Deschide la dashboard",
+    "noSessionTooltip": "Nu ai o sesiune deschisă",
+    "emptyCatalogTitle": "Catalogul este gol",
+    "emptyCatalogBody": "Apasă pe butonul de sincronizare din partea de sus ca să descarci articolele.",
+    "scaleBarcodePluUnknown": "PLU necunoscut: {plu}",
+    "scaleBarcodeWrongUnit": "Cod cântar pentru articolul {name} — nu se vinde la kg/l (unitate: {unit}).",
+    "customerDialog": {
+      "title": "Alege client",
+      "searchPlaceholder": "Caută după nume sau CUI…",
+      "none": "Niciun client (persoană fizică)",
+      "empty": "Niciun client găsit."
+    },
+    "discountDialog": {
+      "title": "Discount pe bon",
+      "body": "Introdu suma de scăzut din totalul bonului.",
+      "field": "Sumă",
+      "apply": "Aplică"
+    },
+    "checkoutDialog": {
+      "title": "Încasare",
+      "toPay": "De plătit",
+      "remaining": "De plătit în continuare",
+      "paid": "Achitat",
+      "change": "Rest",
+      "chooseMethod": "Alege metoda de plată",
+      "method": {
+        "cash": "Numerar",
+        "card": "Card",
+        "voucher": "Bon / tichet",
+        "modern": "Modern (Apple / Google Pay)",
+        "transfer": "Transfer bancar"
+      },
+      "quickCash": "Sume rapide",
+      "quickCashHint": "Click pe sumă = adaugă plată direct",
+      "amount": "Sumă",
+      "addPayment": "Adaugă plată parțială",
+      "addPaymentHint": "Pentru sume manuale (ex. 26.50 lei)",
+      "changeDue": "Rest de dat: {amount}",
+      "finalize": "Finalizează și tipărește",
+      "submitting": "Se procesează…",
+      "successTitle": "Bon finalizat",
+      "successSubtitle": "Bon #{number} • {total}",
+      "successPrint": "Bon tipărit fiscal (placeholder)",
+      "successNewReceipt": "Bon nou",
+      "queuedTitle": "Bon salvat local",
+      "queuedSubtitle": "Va fi sincronizat automat când revii online.",
+      "errorBusiness": "Backend a respins bonul: {message}",
+      "errorUnknown": "Eroare neașteptată."
+    },
+    "queue": {
+      "badge": "{count} în coadă",
+      "drawerTitle": "Bonuri în așteptare",
+      "drawerEmpty": "Nu există bonuri în coadă.",
+      "statusPending": "În așteptare",
+      "statusFailed": "Eșuat",
+      "retryAll": "Reîncearcă toate"
+    }
+  }
+}
