@@ -191,7 +191,7 @@ class SyncController extends Controller
 
     public function pendingReceipts(): JsonResponse
     {
-        $receipts = Receipt::with(['items', 'payments'])
+        $receipts = Receipt::with(['items.gestiune', 'items.article', 'payments', 'customer'])
             ->where('status', 'completed')
             ->whereNull('saga_synced_at')
             ->orderBy('created_at')
