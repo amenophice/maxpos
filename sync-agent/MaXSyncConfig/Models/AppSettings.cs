@@ -11,9 +11,6 @@ public sealed class AppSettings
     [JsonPropertyName("Firebird")]
     public FirebirdSection Firebird { get; set; } = new();
 
-    [JsonPropertyName("Sync")]
-    public SyncSection Sync { get; set; } = new();
-
     // Pastreaza orice cheie suplimentara (ex: Serilog) pentru a nu o pierde la salvare.
     [JsonExtensionData]
     public Dictionary<string, System.Text.Json.JsonElement> Extra { get; set; } = new();
@@ -35,6 +32,24 @@ public sealed class MaxPosSection
 
     [JsonPropertyName("ReceiptExportIntervalMinutes")]
     public int ReceiptExportIntervalMinutes { get; set; } = 5;
+
+    [JsonPropertyName("ReceiptNumberPrefix")]
+    public string ReceiptNumberPrefix { get; set; } = "MXPS";
+
+    [JsonPropertyName("DefaultClientCode")]
+    public string DefaultClientCode { get; set; } = "DIVERSE";
+
+    [JsonPropertyName("DefaultClientName")]
+    public string DefaultClientName { get; set; } = "Clienti diversi";
+
+    [JsonPropertyName("DefaultGestiuneCode")]
+    public string DefaultGestiuneCode { get; set; } = "0001";
+
+    [JsonPropertyName("DefaultGestiuneName")]
+    public string DefaultGestiuneName { get; set; } = "Magazin";
+
+    [JsonPropertyName("SyncOnlyActiveArticles")]
+    public bool SyncOnlyActiveArticles { get; set; } = true;
 }
 
 public sealed class FirebirdSection
@@ -56,25 +71,4 @@ public sealed class FirebirdSection
 
     [JsonPropertyName("Charset")]
     public string Charset { get; set; } = "UTF8";
-}
-
-public sealed class SyncSection
-{
-    [JsonPropertyName("ReceiptNumberPrefix")]
-    public string ReceiptNumberPrefix { get; set; } = "MXPS";
-
-    [JsonPropertyName("DefaultClientCode")]
-    public string DefaultClientCode { get; set; } = "DIVERSE";
-
-    [JsonPropertyName("DefaultClientName")]
-    public string DefaultClientName { get; set; } = "Clienti diversi";
-
-    [JsonPropertyName("DefaultGestiuneCode")]
-    public string DefaultGestiuneCode { get; set; } = "0001";
-
-    [JsonPropertyName("DefaultGestiuneName")]
-    public string DefaultGestiuneName { get; set; } = "Magazin";
-
-    [JsonPropertyName("SyncOnlyActiveArticles")]
-    public bool SyncOnlyActiveArticles { get; set; } = true;
 }

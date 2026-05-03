@@ -101,12 +101,12 @@ public partial class MainWindow : Window
         TxtFbPassword.Password = _settings.Firebird.Password;
         SelectComboValue(CmbFbCharset, _settings.Firebird.Charset);
 
-        TxtReceiptPrefix.Text = _settings.Sync.ReceiptNumberPrefix;
-        TxtDefaultClientCode.Text = _settings.Sync.DefaultClientCode;
-        TxtDefaultClientName.Text = _settings.Sync.DefaultClientName;
-        TxtDefaultGestiuneCode.Text = _settings.Sync.DefaultGestiuneCode;
-        TxtDefaultGestiuneName.Text = _settings.Sync.DefaultGestiuneName;
-        ChkSyncOnlyActive.IsChecked = _settings.Sync.SyncOnlyActiveArticles;
+        TxtReceiptPrefix.Text = _settings.MaxPos.ReceiptNumberPrefix;
+        TxtDefaultClientCode.Text = _settings.MaxPos.DefaultClientCode;
+        TxtDefaultClientName.Text = _settings.MaxPos.DefaultClientName;
+        TxtDefaultGestiuneCode.Text = _settings.MaxPos.DefaultGestiuneCode;
+        TxtDefaultGestiuneName.Text = _settings.MaxPos.DefaultGestiuneName;
+        ChkSyncOnlyActive.IsChecked = _settings.MaxPos.SyncOnlyActiveArticles;
     }
 
     private static void SelectComboValue(ComboBox combo, string value)
@@ -137,12 +137,12 @@ public partial class MainWindow : Window
         _settings.Firebird.Password = TxtFbPassword.Password;
         _settings.Firebird.Charset = (CmbFbCharset.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "UTF8";
 
-        _settings.Sync.ReceiptNumberPrefix = TxtReceiptPrefix.Text.Trim();
-        _settings.Sync.DefaultClientCode = TxtDefaultClientCode.Text.Trim();
-        _settings.Sync.DefaultClientName = TxtDefaultClientName.Text.Trim();
-        _settings.Sync.DefaultGestiuneCode = TxtDefaultGestiuneCode.Text.Trim();
-        _settings.Sync.DefaultGestiuneName = TxtDefaultGestiuneName.Text.Trim();
-        _settings.Sync.SyncOnlyActiveArticles = ChkSyncOnlyActive.IsChecked ?? true;
+        _settings.MaxPos.ReceiptNumberPrefix = TxtReceiptPrefix.Text.Trim();
+        _settings.MaxPos.DefaultClientCode = TxtDefaultClientCode.Text.Trim();
+        _settings.MaxPos.DefaultClientName = TxtDefaultClientName.Text.Trim();
+        _settings.MaxPos.DefaultGestiuneCode = TxtDefaultGestiuneCode.Text.Trim();
+        _settings.MaxPos.DefaultGestiuneName = TxtDefaultGestiuneName.Text.Trim();
+        _settings.MaxPos.SyncOnlyActiveArticles = ChkSyncOnlyActive.IsChecked ?? true;
     }
 
     private static int ParseInt(string text, int fallback)
