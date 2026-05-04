@@ -15,14 +15,14 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        env('FRONTEND_URL', 'http://localhost:3000'),
-        'http://backend.test',
-    ],
+    'https://maxpos.ro',
+    'https://www.maxpos.ro',
+	],
 
     'allowed_origins_patterns' => [],
 

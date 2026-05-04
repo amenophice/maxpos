@@ -13,7 +13,31 @@
       "PowerShell(Set-Location C:\\\\dev\\\\MaXPos\\\\backend; $models = @\\(\"Gestiune\",\"Group\",\"Article\",\"Barcode\",\"Customer\",\"StockLevel\"\\); foreach \\($m in $models\\) { php artisan make:filament-resource $m --generate --no-interaction 2>&1 | Select-Object -Last 2 })",
       "Bash(python *)",
       "Bash(grep -v \"^$\")",
-      "PowerShell(pnpm lint *)"
+      "PowerShell(pnpm lint *)",
+      "Bash(dotnet:*)",
+      "Bash(php8.4 artisan:*)",
+      "Bash(php8.4:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git remote:*)",
+      "Bash(grep -l \"RAW SYNC\\\\|Sync payload\" storage/logs/*.log)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -X POST https://api.maxpos.ro/api/v1/sync/articles -H 'Authorization: Bearer 58|RO0WwY9CyOQzF2CP7HThCc3eE0J8YfLSp8jOZq30f1fbb481' -H 'Content-Type: application/json' -H 'Accept: application/json' -d @/tmp/sync-payload.json)",
+      "Read(//etc/php/8.4/fpm/**)",
+      "Read(//etc/php/8.4/**)",
+      "Bash(curl -s -X POST https://api.maxpos.ro/api/v1/sync/articles -H 'Authorization: Bearer __TRACKED_VAR__' -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"articles\":[{\"sku\":\"X\",\"name\":\"X\",\"price\":1}]}')",
+      "Bash(dpkg -l)",
+      "Bash(apt-get install:*)",
+      "Bash(apt-cache policy:*)",
+      "Read(//var/cache/apt/archives/**)",
+      "Read(//home/api.maxpos.ro/**)",
+      "Bash(git config:*)",
+      "Read(//root/**)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pm2 restart:*)",
+      "Bash(pm2 list:*)"
     ]
   }
 }
