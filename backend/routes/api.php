@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/pos/bootstrap', [PosController::class, 'bootstrap']);
         Route::post('/pos/checkout', [PosController::class, 'checkout'])->middleware('can:pos.sell');
+        Route::get('/pos/receipts', [ReceiptController::class, 'index']);
 
         Route::post('/cash-sessions/open', [CashSessionController::class, 'open'])
             ->middleware('can:pos.open-session');

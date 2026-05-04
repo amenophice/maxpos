@@ -106,6 +106,53 @@
     "generic": "A apărut o eroare. Reîncearcă.",
     "notFound": "Pagina căutată nu există."
   },
+  "receipts": {
+    "title": "Istoric bonuri",
+    "totalCount": "{count} bonuri",
+    "filters": {
+      "dateFrom": "De la",
+      "dateTo": "Până la",
+      "search": "Caută după număr bon...",
+      "submit": "Caută",
+      "reset": "Resetează filtrele"
+    },
+    "columns": {
+      "number": "Nr. bon",
+      "date": "Data",
+      "items": "Articole",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Acțiuni"
+    },
+    "status": {
+      "completed": "Finalizat",
+      "voided": "Anulat"
+    },
+    "details": "Detalii",
+    "detailsTitle": "Detalii bon #{number}",
+    "itemName": "Produs",
+    "itemQty": "Cant.",
+    "itemPrice": "Preț unitar",
+    "itemTotal": "Total linie",
+    "payments": "Plăți",
+    "paymentMethod": {
+      "cash": "Numerar",
+      "card": "Card",
+      "voucher": "Bon / tichet",
+      "modern": "Apple / Google Pay",
+      "transfer": "Transfer bancar"
+    },
+    "subtotal": "Subtotal",
+    "vat": "TVA",
+    "total": "Total",
+    "emptyState": "Nu există bonuri în această perioadă.",
+    "loading": "Se încarcă...",
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Următor",
+      "page": "Pagina {current} din {last}"
+    }
+  },
   "pos": {
     "searchPlaceholder": "Scanează cod de bare sau caută după nume / SKU…",
     "searchClearAria": "Curăță căutarea",

@@ -100,6 +100,53 @@
     "generic": "Something went wrong. Try again.",
     "notFound": "The page you requested does not exist."
   },
+  "receipts": {
+    "title": "Receipt History",
+    "totalCount": "{count} receipts",
+    "filters": {
+      "dateFrom": "From",
+      "dateTo": "To",
+      "search": "Search by receipt number...",
+      "submit": "Search",
+      "reset": "Reset filters"
+    },
+    "columns": {
+      "number": "Receipt #",
+      "date": "Date",
+      "items": "Items",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "completed": "Completed",
+      "voided": "Voided"
+    },
+    "details": "Details",
+    "detailsTitle": "Receipt #{number} details",
+    "itemName": "Product",
+    "itemQty": "Qty",
+    "itemPrice": "Unit price",
+    "itemTotal": "Line total",
+    "payments": "Payments",
+    "paymentMethod": {
+      "cash": "Cash",
+      "card": "Card",
+      "voucher": "Voucher",
+      "modern": "Apple / Google Pay",
+      "transfer": "Bank transfer"
+    },
+    "subtotal": "Subtotal",
+    "vat": "VAT",
+    "total": "Total",
+    "emptyState": "No receipts found for this period.",
+    "loading": "Loading...",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {current} of {last}"
+    }
+  },
   "pos": {
     "searchPlaceholder": "Scan barcode or search by name / SKU…",
     "searchClearAria": "Clear search",

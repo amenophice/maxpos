@@ -18,11 +18,45 @@ use App\Models\Receipt;
 use App\Models\ReceiptItem;
 use App\Services\ReceiptService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReceiptController extends Controller
 {
     public function __construct(private readonly ReceiptService $service) {}
+
+    public function index(Request $request): JsonResponse
+    {
+        $perPage = min((int) $request->query('per_page', 20), 100);
+
+        $query = Receipt::with(['items', 'payments'])
+            ->whereIn('status', ['completed', 'voided'])
+            ->orderByDesc('created_at');
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->query('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->query('date_to'));
+        }
+
+        if ($request->filled('search')) {
+            $query->where('number', $request->query('search'));
+        }
+
+        $paginated = $query->paginate($perPage);
+
+        return response()->json([
+            'data' => ReceiptResource::collection($paginated),
+            'meta' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page' => $paginated->lastPage(),
+                'per_page' => $paginated->perPage(),
+                'total' => $paginated->total(),
+            ],
+        ]);
+    }
 
     public function store(CreateReceiptRequest $request): JsonResponse
     {
