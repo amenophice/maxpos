@@ -1,4 +1,3 @@
-using System.Text;
 using FirebirdSql.Data.FirebirdClient;
 using MaXSync.Helpers;
 using MaXSync.Models;
@@ -145,9 +144,9 @@ public sealed class FirebirdService
             await using (var cmd = new FbCommand(insertHeaderSql, conn, (FbTransaction)tx))
             {
                 cmd.Parameters.AddWithValue("@id", newIesireId);
-                cmd.Parameters.AddWithValue("@nr", ToWin1252Safe(Truncate(BuildNrIesire(receipt.Number), 16)));
-                cmd.Parameters.AddWithValue("@cod", ToWin1252Safe(Truncate(clientCode, 8)));
-                cmd.Parameters.AddWithValue("@den", ToWin1252Safe(Truncate(clientName, 64)));
+                cmd.Parameters.AddWithValue("@nr", Truncate(BuildNrIesire(receipt.Number), 16));
+                cmd.Parameters.AddWithValue("@cod", Truncate(clientCode, 8));
+                cmd.Parameters.AddWithValue("@den", Truncate(clientName, 64));
                 cmd.Parameters.AddWithValue("@data", receipt.IssuedAt.Date);
                 cmd.Parameters.AddWithValue("@baza", receipt.Subtotal);
                 cmd.Parameters.AddWithValue("@tva", receipt.VatTotal);
@@ -164,15 +163,18 @@ public sealed class FirebirdService
                     (@id_iesire, @gest, @den_gest, @cod, @den, @um, @tva_art,
                      @cant, @pret, @pu_tva, @valoare, @tva_ded, @total, 0, 0)";
 
+            _logger.LogInformation(
+                "Bon {Number}: {Count} items to insert", receipt.Number, receipt.Items.Count);
+
             foreach (var item in receipt.Items)
             {
                 await using var insertCmd = new FbCommand(insertLineSql, conn, (FbTransaction)tx);
                 insertCmd.Parameters.AddWithValue("@id_iesire", newIesireId);
-                insertCmd.Parameters.AddWithValue("@gest", ToWin1252Safe(Truncate(gestiuneCode, 4)));
-                insertCmd.Parameters.AddWithValue("@den_gest", ToWin1252Safe(Truncate(gestiuneName, 24)));
-                insertCmd.Parameters.AddWithValue("@cod", ToWin1252Safe(Truncate(item.Sku, 16)));
-                insertCmd.Parameters.AddWithValue("@den", ToWin1252Safe(Truncate(item.Name, 60)));
-                insertCmd.Parameters.AddWithValue("@um", ToWin1252Safe(Truncate(item.Unit, 5)));
+                insertCmd.Parameters.AddWithValue("@gest", Truncate(gestiuneCode, 4));
+                insertCmd.Parameters.AddWithValue("@den_gest", Truncate(gestiuneName, 24));
+                insertCmd.Parameters.AddWithValue("@cod", Truncate(item.Sku, 16));
+                insertCmd.Parameters.AddWithValue("@den", Truncate(item.Name, 60));
+                insertCmd.Parameters.AddWithValue("@um", Truncate(item.Unit, 5));
                 insertCmd.Parameters.AddWithValue("@tva_art", (short)Math.Round(item.VatRate, MidpointRounding.AwayFromZero));
                 insertCmd.Parameters.AddWithValue("@cant", item.Quantity);
                 insertCmd.Parameters.AddWithValue("@pret", item.UnitPriceExVat);
@@ -210,18 +212,4 @@ public sealed class FirebirdService
 
     private static string Truncate(string value, int maxLength)
         => string.IsNullOrEmpty(value) || value.Length <= maxLength ? value : value[..maxLength];
-
-    // Re-codifica un sir UTF-8 in WIN-1252 cu inlocuiri pentru caracterele care
-    // nu exista in code-page (necesar cand baza Saga ruleaza pe Charset=NONE
-    // si stocheaza datele direct ca octeti Windows-1252).
-    private static readonly Encoding Win1252 = CodePagesEncodingProvider.Instance.GetEncoding(1252)
-        ?? throw new InvalidOperationException("Code page Windows-1252 indisponibil.");
-
-    private static string ToWin1252Safe(string? value)
-    {
-        if (string.IsNullOrEmpty(value)) return string.Empty;
-        var bytes = Encoding.UTF8.GetBytes(value);
-        var win1252Bytes = Encoding.Convert(Encoding.UTF8, Win1252, bytes);
-        return Win1252.GetString(win1252Bytes);
-    }
 }

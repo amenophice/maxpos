@@ -7,7 +7,7 @@ public sealed class FirebirdOptions
     public string Database { get; set; } = string.Empty;
     public string Username { get; set; } = "SYSDBA";
     public string Password { get; set; } = "mastersaga";
-    public string Charset { get; set; } = "UTF8";
+    public string Charset { get; set; } = "WIN1252";
 
     public string BuildConnectionString()
     {
