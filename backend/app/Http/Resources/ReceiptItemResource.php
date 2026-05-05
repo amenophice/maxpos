@@ -9,6 +9,14 @@ class ReceiptItemResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $vatRate = (float) $this->vat_rate;
+        $unitPriceIncVat = (float) $this->unit_price;
+        $unitPriceExVat = $vatRate > 0
+            ? $unitPriceIncVat / (1 + $vatRate / 100)
+            : $unitPriceIncVat;
+        $lineTotalExVat = (float) $this->line_subtotal;
+        $lineTotalIncVat = (float) $this->line_total;
+
         return [
             'id' => $this->id,
             'article_id' => $this->article_id,
@@ -16,13 +24,14 @@ class ReceiptItemResource extends JsonResource
             'name' => $this->article_name_snapshot,
             'sku' => $this->sku_snapshot,
             'quantity' => (float) $this->quantity,
-            'unit_price' => (float) $this->unit_price,
+            'unit_price_ex_vat' => $unitPriceExVat,
+            'unit_price_inc_vat' => $unitPriceIncVat,
             'unit' => $this->relationLoaded('article') ? ($this->article?->unit ?? 'buc') : 'buc',
-            'vat_rate' => (float) $this->vat_rate,
+            'vat_rate' => $vatRate,
             'discount_amount' => (float) $this->discount_amount,
-            'line_subtotal' => (float) $this->line_subtotal,
-            'line_vat' => (float) $this->line_vat,
-            'line_total' => (float) $this->line_total,
+            'line_total_ex_vat' => $lineTotalExVat,
+            'line_vat' => $lineTotalIncVat - $lineTotalExVat,
+            'line_total_inc_vat' => $lineTotalIncVat,
         ];
     }
 }
