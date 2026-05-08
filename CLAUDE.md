@@ -12,18 +12,18 @@ Current focus: MVP is shop mode only (`operating_mode = 'shop'`). Restaurant mod
 
 - **Backend:** Laravel 11, Filament 4, PHP 8.4, Laravel Sanctum, Laravel Reverb, Spatie Permission, stancl/tenancy (single-DB mode). Dev DB: SQLite. Prod DB: MySQL 8.
 - **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui (new-york style), Framer Motion, Dexie.js (IndexedDB), next-intl, Zustand, TanStack React Query, Serwist (PWA/service worker).
-- **Sync Agent (later phase):** .NET 8 Windows Service, WebSocket client, FirebirdSql.Data.FirebirdClient.
+- **Sync Agent (MaXSync):** .NET 9 Windows Service, HTTP polling (no WebSocket), `FirebirdSql.Data.FirebirdClient`, Serilog. Built and operational — pulls articles/groups/gestiuni from Saga Firebird, exports completed receipts back into `IESIRI` / `IES_DET`.
 - **Billing:** Laravel Cashier (Stripe).
 - **E-Factura:** ANAF SPV integration (not yet built).
 
 ## Monorepo structure
 
 ```
-source/
+.
 ├── backend/      # Laravel 11 + Filament 4
 ├── frontend/     # Next.js 16 PWA
 ├── docs/         # API endpoint reference
-└── sync-agent/   # .NET 8 — phase 4, empty for now
+└── sync-agent/   # .NET 9 MaXSync Windows Service + MaXSyncConfig GUI
 ```
 
 ## Production deployment
@@ -38,7 +38,7 @@ This server (`api.maxpos.ro`) is the live production environment — not a local
 
 ## Build & dev commands
 
-### Backend (from `source/backend/`)
+### Backend (from `backend/`)
 
 ```bash
 composer install                       # Install PHP dependencies
@@ -54,7 +54,7 @@ vendor/bin/pint --test                 # Check formatting without fixing
 
 Testing uses in-memory SQLite (`phpunit.xml`). Tests are written in Pest, not PHPUnit.
 
-### Frontend (from `source/frontend/`)
+### Frontend (from `frontend/`)
 
 ```bash
 pnpm install          # Install dependencies
@@ -63,6 +63,15 @@ pnpm build            # Production build (run this on prod, then restart PM2)
 pnpm lint             # ESLint
 pnpm test             # Vitest — runs once (vitest run)
 pnpm test:watch       # Vitest — watch mode
+```
+
+### Sync agent (from `sync-agent/MaXSync/`)
+
+```bash
+dotnet build MaXSync/MaXSync.csproj -c Debug    # Build the worker service
+dotnet run --project MaXSync/MaXSync.csproj     # Run as console (dev)
+# Install/uninstall as Windows Service: use the buttons in the MaXSyncConfig GUI,
+# or the install-service.ps1 / uninstall-service.ps1 scripts copied to the build output.
 ```
 
 ## Architecture
@@ -96,6 +105,16 @@ pnpm test:watch       # Vitest — watch mode
 **Search:** IndexedDB full-text search with diacritic-aware normalization for Romanian (ă, ș, ț → a, s, t).
 
 **Money:** Decimal.js for all arithmetic — no floating point.
+
+### Sync agent (MaXSync)
+
+**Connection to Saga Firebird:** Charset is `WIN1252` (set in both `FirebirdOptions.Charset` default and `appsettings.json`). With this setting `FirebirdClient` auto-converts .NET strings ↔ WIN-1252 bytes — no manual encoding helpers. Do NOT add `System.Text.Encoding.CodePages` or hand-roll a `ToWin1252Safe` shim; it has been removed and reverting to `Charset=NONE` corrupts Romanian diacritics.
+
+**Receipt insert (`FirebirdService.InsertReceiptAsync`):** Single SERIALIZABLE transaction. `IESIRI.ID_IESIRE` is allocated as `MAX(ID_IESIRE) + 1` (no generator/trigger in Saga v602); `IES_DET` PK is filled by the `TRGIES_DET_PK` trigger from `GEN_IES_DET_PK`, so do not pass it explicitly. The receipt number is prefixed (e.g. `MXPS-…`) so MaXPos bonuri are distinguishable from existing Saga series.
+
+**Receipt JSON contract (backend → MaXSync):** `ReceiptResource` + `ReceiptItemResource` are the wire format consumed by the C# `MaxPosReceipt` / `MaxPosReceiptItem` models. Item field names must stay aligned: `unit_price_ex_vat`, `unit_price_inc_vat`, `line_total_ex_vat`, `line_total_inc_vat`, `line_vat`, `vat_rate`, `quantity`, `name`, `sku`, `unit`. Backend stores `unit_price` VAT-inclusive and `line_subtotal` net / `line_total` gross; the resource decomposes them into the ex/inc pair the agent expects. Renaming or dropping any of these breaks Saga export (silent zeros).
+
+**Polling cadence:** `ArticleSyncIntervalMinutes` (default 30) pushes articles/groups/gestiuni to MaXPos; `ReceiptExportIntervalMinutes` (default 5) pulls `/api/v1/sync/receipts/pending` and inserts into Saga, then calls `/api/v1/sync/receipts/{id}/mark-synced`.
 
 ## Conventions
 
